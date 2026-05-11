@@ -17,7 +17,7 @@ function parseArgs(): Args {
     return i >= 0 ? argv[i + 1] : undefined;
   };
 
-  const email = (get('--email') ?? process.env.ADMIN_EMAIL ?? '').trim().toLowerCase();
+  const email = (get('--email') ?? process.env.JBRTECHNO_ADMIN_EMAIL ?? '').trim().toLowerCase();
   const password = (get('--password') ?? process.env.ADMIN_PASSWORD ?? '').trim();
   const name = get('--name') ?? process.env.ADMIN_NAME;
   const roleInput = (get('--role') ?? process.env.ADMIN_ROLE ?? 'SUPER_ADMIN').toUpperCase();
@@ -39,7 +39,7 @@ function parseArgs(): Args {
 async function main() {
   const { email, password, name, role } = parseArgs();
 
-  const dbUrl = process.env.DATABASE_URL ?? '';
+  const dbUrl = process.env.JBRTECHNO_DATABASE_URL ?? '';
   const dbHost = dbUrl.replace(/.*@/, '').split('/')[0] || 'unknown';
   const dbName = dbUrl.split('/').pop()?.split('?')[0] || 'unknown';
   console.log(`🔌 Target DB: ${dbName} @ ${dbHost}`);

@@ -27,7 +27,7 @@ type PositionSeed = {
 };
 
 async function main() {
-  const dbUrl = process.env.DATABASE_URL ?? '';
+  const dbUrl = process.env.JBRTECHNO_DATABASE_URL ?? '';
   const dbHost = dbUrl.replace(/.*@/, '').split('/')[0] || 'unknown';
   const dbName = dbUrl.split('/').pop()?.split('?')[0] || 'unknown';
   console.log(`🔌 Target DB: ${dbName} @ ${dbHost}\n`);

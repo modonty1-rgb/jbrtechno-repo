@@ -18,7 +18,7 @@ export default async function ContactPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
-  const whatsappNumberEnv = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+  const whatsappNumberEnv = process.env.NEXT_PUBLIC_JBRTECHNO_WHATSAPP_NUMBER;
   const whatsappDisplayNumber = whatsappNumberEnv
     ? whatsappNumberEnv.startsWith('+')
       ? whatsappNumberEnv

@@ -15,7 +15,7 @@ export function PublicShell({ children }: PublicShellProps) {
   const params = useParams();
   const locale = (params.locale as string) || 'ar';
   const navTranslations = useTranslations('nav');
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+  const whatsappNumber = process.env.NEXT_PUBLIC_JBRTECHNO_WHATSAPP_NUMBER;
 
   return (
     <>

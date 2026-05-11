@@ -8,12 +8,14 @@ loadDotenv({ path: path.resolve(process.cwd(), '../../.env.shared') });
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@jbrtechno/database', '@jbrtechno/shared', '@jbrtechno/ui'],
-  // Force-include Prisma's native query engine in the serverless function bundle.
-  // Without this, Turbopack's NFT misses the .so.node binary in our custom output path.
+  // Monorepo: tell Next.js to trace files from the workspace root, not just this app.
+  // Without this, packages/database/** is outside the trace root and gets dropped.
+  outputFileTracingRoot: path.resolve(process.cwd(), '../../'),
+  // Force-include Prisma's native query engine (custom output path, not @prisma/client).
   outputFileTracingIncludes: {
     '/**/*': [
-      '../../packages/database/generated/client/libquery_engine-*',
-      '../../packages/database/generated/client/schema.prisma',
+      './packages/database/generated/client/libquery_engine-*',
+      './packages/database/generated/client/schema.prisma',
     ],
   },
   images: {

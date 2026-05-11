@@ -8,6 +8,14 @@ loadDotenv({ path: path.resolve(process.cwd(), '../../.env.shared') });
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@jbrtechno/database', '@jbrtechno/shared', '@jbrtechno/ui'],
+  // Force-include Prisma's native query engine in the serverless function bundle.
+  // Without this, Turbopack's NFT misses the .so.node binary in our custom output path.
+  outputFileTracingIncludes: {
+    '/**/*': [
+      '../../packages/database/generated/client/libquery_engine-*',
+      '../../packages/database/generated/client/schema.prisma',
+    ],
+  },
   images: {
     remotePatterns: [
       {

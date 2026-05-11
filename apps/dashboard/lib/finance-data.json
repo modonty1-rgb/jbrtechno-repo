@@ -1,0 +1,642 @@
+{
+  "currency": "SAR",
+  "period": "monthly",
+  "lastUpdated": "2025-01",
+  "version": "2.0",
+
+  "costs": {
+    "fixed": {
+      "leadership": {
+        "key": "leadership",
+        "label": "Leadership Team",
+        "items": [
+          {
+            "label": "CEO / Founder",
+            "amount": 0,
+            "category": "leadership",
+            "details": "Strategy, fundraising, vision. Salary: 0-6,000 SAR/month (may be unpaid initially or token salary)"
+          },
+          {
+            "label": "CTO / Head of Technology",
+            "amount": 5500,
+            "category": "leadership",
+            "details": "Product development, technical strategy. Salary: 5,000-6,000 SAR/month (avg 5,500)"
+          },
+          {
+            "label": "Head of Marketing (1)",
+            "amount": 3500,
+            "category": "leadership",
+            "details": "Growth, acquisition, branding. Salary: 3,000-4,000 SAR/month (avg 3,500)"
+          },
+          {
+            "label": "Head of Marketing (2)",
+            "amount": 3500,
+            "category": "leadership",
+            "details": "Content strategy, team management. Salary: 3,000-4,000 SAR/month (avg 3,500)"
+          },
+          {
+            "label": "Operations Manager",
+            "amount": 3000,
+            "category": "leadership",
+            "details": "3-4 years experience: Operations management, coordination. Salary: 2,500-3,000 SAR/month (avg 2,750)"
+          }
+        ],
+        "note": "Leadership Team - 5 people (CEO, CTO, Head of Marketing (1), Head of Marketing (2), Operations Manager)"
+      },
+      "technical": {
+        "key": "technical",
+        "label": "Technical Team",
+        "items": [
+          {
+            "label": "Full-Stack Developer (1) - Next.js + TypeScript",
+            "amount": 3500,
+            "category": "technical",
+            "details": "3-5 years experience: Platform development, API. Salary: 3,000-4,000 SAR/month (avg 3,500)"
+          },
+          {
+            "label": "Full-Stack Developer (2) - Next.js + TypeScript",
+            "amount": 3500,
+            "category": "technical",
+            "details": "3-5 years experience: Platform development, API. Salary: 3,000-4,000 SAR/month (avg 3,500)"
+          },
+          {
+            "label": "Lead Backend Developer",
+            "amount": 4000,
+            "category": "technical",
+            "details": "4-6 years experience: Backend architecture, database, API design. Salary: 3,500-4,500 SAR/month (avg 4,000)"
+          },
+          {
+            "label": "React Native Developer",
+            "amount": 3250,
+            "category": "technical",
+            "details": "2-4 years experience: Mobile app development. Salary: 3,000-3,500 SAR/month (avg 3,250)"
+          },
+          {
+            "label": "UI/UX Designer (1)",
+            "amount": 2500,
+            "category": "technical",
+            "details": "2-3 years experience: User interface design. Salary: 2,000-3,000 SAR/month (avg 2,500)"
+          },
+          {
+            "label": "Motion Graphics Designer",
+            "amount": 2500,
+            "category": "technical",
+            "details": "2-3 years experience: Motion graphics and animation design. Salary: 2,000-3,000 SAR/month (avg 2,500)"
+          }
+        ],
+        "note": "Technical Team - 6 people (Full-stack developers, Backend lead, React Native, Designers)"
+      },
+      "content": {
+        "key": "content",
+        "label": "Content Team",
+        "items": [
+          {
+            "label": "SEO Content Writer (1)",
+            "amount": 1250,
+            "category": "content",
+            "details": "2-3 years experience: Writing SEO articles in Arabic. Salary: 1,000-1,500 SAR/month (avg 1,250)"
+          },
+          {
+            "label": "SEO Content Writer (2)",
+            "amount": 1250,
+            "category": "content",
+            "details": "2-3 years experience: Writing SEO articles in Arabic. Salary: 1,000-1,500 SAR/month (avg 1,250)"
+          },
+          {
+            "label": "SEO Content Writer (3)",
+            "amount": 1250,
+            "category": "content",
+            "details": "1-2 years experience: Writing SEO articles in Arabic. Salary: 1,000-1,500 SAR/month (avg 1,250)"
+          },
+          {
+            "label": "SEO Content Writer (4)",
+            "amount": 1250,
+            "category": "content",
+            "details": "1-2 years experience: Writing SEO articles in Arabic. Salary: 1,000-1,500 SAR/month (avg 1,250)"
+          },
+          {
+            "label": "Content Editor (1)",
+            "amount": 1500,
+            "category": "content",
+            "details": "2-3 years experience: Content review and editing. Salary: 1,250-1,750 SAR/month (avg 1,500)"
+          },
+          {
+            "label": "Content Editor (2)",
+            "amount": 1500,
+            "category": "content",
+            "details": "2-3 years experience: Content review and editing. Salary: 1,250-1,750 SAR/month (avg 1,500)"
+          }
+        ],
+        "note": "Content Team - 6 people (4 SEO content writers + 2 content editors)"
+      },
+      "marketingSales": {
+        "key": "marketing-sales",
+        "label": "Marketing & Sales Team",
+        "items": [
+          {
+            "label": "Digital Marketing Specialist",
+            "amount": 2750,
+            "category": "marketing",
+            "details": "2-3 years experience: Google Ads, Meta Ads, performance analysis. Salary: 2,500-3,000 SAR/month (avg 2,750)"
+          },
+          {
+            "label": "Social Media Manager",
+            "amount": 1750,
+            "category": "marketing",
+            "details": "1-2 years experience: Social media management, content creation. Salary: 1,500-2,000 SAR/month (avg 1,750)"
+          },
+          {
+            "label": "Sales Representative (1)",
+            "amount": 1750,
+            "category": "sales",
+            "details": "2-3 years experience: Lead outreach, deal closing. Salary: 1,500-2,000 SAR/month + commissions (avg 1,750)"
+          },
+          {
+            "label": "Sales Representative (2)",
+            "amount": 1750,
+            "category": "sales",
+            "details": "2-3 years experience: Lead outreach, deal closing. Salary: 1,500-2,000 SAR/month + commissions (avg 1,750)"
+          },
+          {
+            "label": "Customer Success Manager",
+            "amount": 2250,
+            "category": "sales",
+            "details": "2-3 years experience: Customer retention, upsells. Salary: 2,000-2,500 SAR/month (avg 2,250)"
+          }
+        ],
+        "note": "Marketing & Sales Team - 5 people (Digital marketing specialist, Social media manager, 2 sales reps, Customer success manager)"
+      },
+      "operations": {
+        "key": "operations",
+        "label": "Operations Team",
+        "items": [
+          {
+            "label": "Customer Support",
+            "amount": 1125,
+            "category": "operations",
+            "details": "1-2 years experience: Customer support, problem solving. Salary: 1,000-1,250 SAR/month (avg 1,125)"
+          },
+          {
+            "label": "Data Analyst (Part-time)",
+            "amount": 875,
+            "category": "operations",
+            "details": "2-3 years experience: Data analysis, reporting. Salary: 750-1,000 SAR/month part-time (avg 875)"
+          }
+        ],
+        "note": "Operations Team - 2 people (Customer support, Part-time data analyst)"
+      },
+      "infrastructure": {
+        "key": "infrastructure",
+        "label": "Infrastructure & Technology",
+        "items": [
+          {
+            "label": "Next.js Hosting (Vercel Pro)",
+            "amount": 200,
+            "category": "hosting",
+            "details": "Pro Plan: $20/month (~75 SAR) + Additional Bandwidth (~125 SAR) = ~200 SAR/month"
+          },
+          {
+            "label": "Database (MongoDB Atlas M10)",
+            "amount": 214,
+            "category": "database",
+            "details": "MongoDB Atlas M10: $57/month (~214 SAR) - Production-ready plan: 2GB RAM, 10GB Storage, Automatic Backup, Monitoring"
+          },
+          {
+            "label": "Image & Media Storage (Cloudinary)",
+            "amount": 0,
+            "category": "storage",
+            "details": "Cloudinary Free Plan: Free - 25GB storage, 25GB bandwidth/month. Article content in MongoDB, images and media in Cloudinary"
+          },
+          {
+            "label": "SEO Tools (SEMrush Pro)",
+            "amount": 525,
+            "category": "seo-tools",
+            "details": "Pro Plan: $139.95/month (~525 SAR) - Suitable for freelancers and small businesses, includes SEO, SEM, and Content Marketing tools"
+          },
+          {
+            "label": "Google Analytics 4 + Search Console",
+            "amount": 0,
+            "category": "analytics",
+            "details": "Free - Free analytics tools from Google"
+          },
+          {
+            "label": "Development Tools (GitHub Pro)",
+            "amount": 40,
+            "category": "development",
+            "details": "GitHub Pro: $4/month (~15 SAR) × 2-3 developers = ~40 SAR/month"
+          },
+          {
+            "label": "GitHub Copilot (AI Coding Assistant)",
+            "amount": 100,
+            "category": "development",
+            "details": "Copilot Business: $19/month (~71 SAR) × 1-2 developers = ~100 SAR/month"
+          },
+          {
+            "label": "Monitoring Tools (Sentry)",
+            "amount": 80,
+            "category": "monitoring",
+            "details": "Team Plan: $26/month (~98 SAR) for error and performance monitoring"
+          },
+          {
+            "label": "Project Management (ClickUp Free)",
+            "amount": 0,
+            "category": "project-management",
+            "details": "ClickUp Free: Free - Free plan includes basic tasks, boards, and calendars for limited users"
+          },
+          {
+            "label": "Domain & SSL (Vercel)",
+            "amount": 0,
+            "category": "domain",
+            "details": "Free SSL with Vercel - SSL certificates are automatically provided with Vercel hosting (domain is separate)"
+          },
+          {
+            "label": "Email Service (Resend/SendGrid)",
+            "amount": 30,
+            "category": "email",
+            "details": "Email sending service: ~30 SAR/month (volume-based)"
+          }
+        ],
+        "note": "Monthly fixed infrastructure costs - Updated 2025"
+      },
+      "overhead": {
+        "key": "overhead",
+        "label": "Overhead Expenses",
+        "items": [
+          { "label": "Office rent/co-working space", "amount": 2000, "category": "office" },
+          { "label": "Utilities & Internet", "amount": 500, "category": "utilities" },
+          { "label": "Insurance & Legal", "amount": 500, "category": "legal" },
+          { "label": "Miscellaneous admin expenses", "amount": 500, "category": "misc" }
+        ],
+        "note": "Monthly overhead and administrative expenses"
+      }
+    },
+    "variable": {
+      "marketing": {
+        "key": "marketing",
+        "label": "Marketing & Media",
+        "items": [{ "label": "Google + Meta Ads", "amount": 5000, "category": "media" }],
+        "note": "Marketing and advertising costs - Google + Meta Ads"
+      }
+    },
+    "totalMonthly": {
+      "fixed": 53750,
+      "variable": 4500,
+      "base": 58250,
+      "note": "Base monthly costs (excluding variable commissions and fees) - Updated 2025. Includes: Base team (40,000) + Marketing team (13,750) + Infrastructure (1,420) + Overhead (3,500)"
+    },
+    "byPhase": {
+      "launch": {
+        "months": "0-3",
+        "leadership": 13000,
+        "technical": 15000,
+        "content": 9000,
+        "marketingSales": 10250,
+        "operations": 4750,
+        "infrastructure": 1420,
+        "marketing": 4500,
+        "overhead": 3500,
+        "total": 63170,
+        "note": "Launch phase - base costs (Updated 2025). Includes full team: 24 people (4 leadership + 6 technical + 6 content + 5 marketing & sales + 3 operations)"
+      },
+      "growth": {
+        "months": "4-6",
+        "team": 25000,
+        "infrastructure": 1200,
+        "marketing": 6000,
+        "overhead": 4000,
+        "total": 36200,
+        "note": "Growth phase - slight increase in team and marketing"
+      },
+      "scale": {
+        "months": "7-12",
+        "team": 50000,
+        "infrastructure": 8000,
+        "marketing": 8000,
+        "overhead": 8000,
+        "total": 66000,
+        "note": "Scale phase - full team + expanded infrastructure"
+      }
+    }
+  },
+
+  "revenue": {
+    "pricingPlans": [
+      {
+        "name": "Basic Plan",
+        "annualPrice": 2499,
+        "currency": "SAR",
+        "articlesPerMonth": 2,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 139,
+        "description": "2 articles per month for 18 months"
+      },
+      {
+        "name": "Standard Plan",
+        "annualPrice": 3999,
+        "currency": "SAR",
+        "articlesPerMonth": 4,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 222,
+        "description": "4 articles per month for 18 months"
+      },
+      {
+        "name": "Pro Plan",
+        "annualPrice": 6999,
+        "currency": "SAR",
+        "articlesPerMonth": 8,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 389,
+        "description": "8 articles per month for 18 months"
+      },
+      {
+        "name": "Premium Plan",
+        "annualPrice": 9999,
+        "currency": "SAR",
+        "articlesPerMonth": 12,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 556,
+        "description": "12 articles per month for 18 months"
+      }
+    ],
+    "clientDistribution": {
+      "basic": {
+        "percentage": 20,
+        "annualPrice": 2499,
+        "monthlyRecognizedRevenue": 139
+      },
+      "standard": {
+        "percentage": 50,
+        "annualPrice": 3999,
+        "monthlyRecognizedRevenue": 222
+      },
+      "pro": {
+        "percentage": 20,
+        "annualPrice": 6999,
+        "monthlyRecognizedRevenue": 389
+      },
+      "premium": {
+        "percentage": 10,
+        "annualPrice": 9999,
+        "monthlyRecognizedRevenue": 556
+      }
+    },
+    "averageMonthlyPerClient": 272,
+    "averageMonthlyCashFlowPerClient": 408.25,
+    "averageAnnualPrice": 4899,
+    "recognitionModel": {
+      "paymentPeriod": 12,
+      "recognitionPeriod": 18,
+      "monthlyRecognitionRate": 0.0556,
+      "description": "Client pays 12 months upfront, receives 18 months of content (6 months free). Revenue recognized monthly over 18 months"
+    },
+    "year1Target": {
+      "clients": 500,
+      "monthlyRecognizedRevenue": 136085,
+      "annualRevenue": 2449530,
+      "profitMargins": 45,
+      "currency": "SAR"
+    },
+    "projections": [
+      {
+        "month": "0-2",
+        "clients": "10-15",
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": "2,720-4,080",
+        "annualRevenueCollected": "24,990-37,485",
+        "cumulativeAnnualRevenue": "24,990-37,485",
+        "note": "Beta phase - initial clients"
+      },
+      {
+        "month": 3,
+        "clients": 30,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 8160,
+        "annualRevenueCollected": 89970,
+        "cumulativeAnnualRevenue": 124960,
+        "note": "Public launch - initial growth"
+      },
+      {
+        "month": 6,
+        "clients": 100,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 27200,
+        "annualRevenueCollected": 299900,
+        "cumulativeAnnualRevenue": 424860,
+        "note": "Steady growth - approaching break-even"
+      },
+      {
+        "month": 9,
+        "clients": 250,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 68000,
+        "annualRevenueCollected": 749750,
+        "cumulativeAnnualRevenue": 1174610,
+        "note": "Rapid expansion - post break-even"
+      },
+      {
+        "month": 12,
+        "clients": 500,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 136085,
+        "annualRevenueCollected": 2449530,
+        "cumulativeAnnualRevenue": 2449530,
+        "note": "Year 1 target - 500 clients"
+      }
+    ],
+    "addOns": {
+      "potentialServices": [
+        {
+          "name": "Social Media Content Repurposing",
+          "price": 1120,
+          "currency": "SAR",
+          "note": "Monthly add-on"
+        },
+        {
+          "name": "Email Marketing Integration",
+          "price": 750,
+          "currency": "SAR",
+          "note": "Monthly add-on"
+        },
+        {
+          "name": "Video Content Production",
+          "price": 1875,
+          "currency": "SAR",
+          "note": "Monthly add-on"
+        }
+      ],
+      "adoptionRate": 0.15,
+      "note": "15% of clients purchase add-ons"
+    }
+  },
+
+  "metrics": {
+    "cac": {
+      "target": 300,
+      "range": [200, 400],
+      "currency": "SAR",
+      "paybackPeriod": "1-2 months",
+      "note": "Since clients pay annually upfront, CAC payback is almost immediate"
+    },
+    "ltv": {
+      "value": 4899,
+      "currency": "SAR",
+      "avgLifetime": "18 months (one subscription cycle)",
+      "calculation": "Average annual price = 4,899 SAR (one-time payment)",
+      "note": "LTV = average annual price since clients pay upfront"
+    },
+    "ltvCacRatio": {
+      "value": "16:1",
+      "range": "12:1 to 24:1",
+      "calculation": "4,899 ÷ 300 = 16.3",
+      "note": "Excellent ratio - means every SAR invested in marketing returns 16 SAR"
+    },
+    "margins": {
+      "gross": {
+        "contentProduction": "40-50%",
+        "platformSaaS": "70-80%",
+        "blended": "60-65%",
+        "note": "Blended gross margin"
+      },
+      "net": {
+        "month12": "45%+",
+        "year2": "50-55%",
+        "note": "Target net margin"
+      }
+    },
+    "churn": {
+      "target": "<8%",
+      "monthly": "<8%",
+      "industryBenchmark": "10-15%",
+      "retentionStrategy": "18-month package + results-focused",
+      "note": "Target below industry average"
+    },
+    "growth": {
+      "monthlyRecognizedRevenueGrowth": {
+        "months1to3": "20-30%",
+        "months4to6": "15-25%",
+        "months7to12": "10-15%"
+      },
+      "newClientsPerWeek": "5-10",
+      "clientCountMonth12": 500
+    }
+  },
+
+  "investment": {
+    "total": {
+      "min": 600000,
+      "max": 720000,
+      "currency": "SAR"
+    },
+    "breakdown": [
+      {
+        "phase": "First Year Salaries",
+        "amount": 600000,
+        "description": "50,000 SAR/month × 12 months = 600,000 SAR",
+        "currency": "SAR"
+      },
+      {
+        "phase": "Tools & Infrastructure (First Year)",
+        "amount": 96000,
+        "description": "~8,000 SAR/month × 12 months = ~96,000 SAR",
+        "currency": "SAR"
+      },
+      {
+        "phase": "Marketing & Launch",
+        "amount": 24000,
+        "description": "~24,000 SAR (first year)",
+        "currency": "SAR"
+      }
+    ],
+    "useOfFunds": {
+      "teamSalaries": "83%",
+      "infrastructure": "13%",
+      "marketing": "3%",
+      "other": "1%"
+    }
+  },
+
+  "breakEven": {
+    "point": "Month 8-9",
+    "achievedBy": "Month 8-9",
+    "note": "Break-even calculated dynamically: Monthly Costs ÷ Average Monthly Revenue Per Client. Updates automatically when any costs change."
+  },
+
+  "profitability": {
+    "timeline": [
+      {
+        "phase": "Months 1-6",
+        "status": "Investment Phase",
+        "cashFlow": "Negative",
+        "note": "Initial investment - negative cash flow"
+      },
+      {
+        "phase": "Month 5-6",
+        "status": "Break-Even",
+        "cashFlow": "Balanced",
+        "note": "Revenue = Costs"
+      },
+      {
+        "phase": "Months 7-12",
+        "status": "Profitability",
+        "cashFlow": "Positive",
+        "margins": "45%+",
+        "note": "Growing margins and profits"
+      },
+      {
+        "phase": "Year 2",
+        "status": "Strong Profitability",
+        "cashFlow": "Strong Positive",
+        "margins": "50-55%",
+        "note": "Strong and sustainable net margins"
+      }
+    ],
+    "milestones": [
+      {
+        "month": 3,
+        "milestone": "30 clients",
+        "mrr": "8,160 SAR",
+        "note": "Successful public launch"
+      },
+      {
+        "month": 6,
+        "milestone": "100 clients + Break-even",
+        "mrr": "27,200 SAR",
+        "note": "Achieving financial break-even"
+      },
+      {
+        "month": 12,
+        "milestone": "500 clients",
+        "mrr": "136,085 SAR",
+        "note": "Year 1 target - strong profitability"
+      }
+    ]
+  },
+
+  "cashFlow": {
+    "model": "Annual Payment Upfront",
+    "description": "Clients pay full annual fee upfront, providing immediate positive cash flow",
+    "advantages": [
+      "Immediate positive cash flow",
+      "Reduced payment risk",
+      "Growth funding from revenue",
+      "Immediate CAC payback"
+    ],
+    "deferredRevenue": {
+      "description": "Revenue recognized over 18 months (12 months paid)",
+      "recognitionRate": "55.6% of annual payment recognized in first year",
+      "note": "Revenue recognized gradually over 18 months"
+    }
+  },
+
+  "notes": [
+    "All figures in Saudi Riyal (SAR)",
+    "Monthly costs stable in initial phase (32,350 SAR/month)",
+    "As clients grow, team expansion may be required (variable costs)",
+    "Break-even calculated dynamically based on average monthly revenue per client (272 SAR)",
+    "Revenue model: Annual upfront payment (12 months) + 18 months content delivery",
+    "Revenue recognized monthly over 18 months per accounting standards",
+    "Low CAC (200-400 SAR) with excellent LTV:CAC ratio (12:1 to 24:1)",
+    "Target: 500 clients by Month 12 with 136,085 SAR/month recognized revenue",
+    "Target margins: 45%+ net by Month 12, 50-55% in Year 2"
+  ]
+}

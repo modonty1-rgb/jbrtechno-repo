@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": [
+    "DATABASE_URL",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+    "NODE_ENV",
+    "CI",
+    "VERCEL",
+    "VERCEL_URL"
+  ],
+  "globalPassThroughEnv": ["GITHUB_TOKEN"],
+  "tasks": {
+    "db:generate": {
+      "cache": false,
+      "outputs": ["generated/**"]
+    },
+    "build": {
+      "dependsOn": ["^db:generate", "^build"],
+      "env": ["NEXT_PUBLIC_*"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env",
+        ".env.local",
+        ".env.production",
+        ".env.production.local"
+      ],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^db:generate"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "type-check": {
+      "dependsOn": ["^db:generate"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

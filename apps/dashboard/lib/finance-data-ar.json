@@ -1,0 +1,588 @@
+{
+  "currency": "SAR",
+  "period": "شهري",
+  "lastUpdated": "2025-01",
+  "version": "2.0",
+
+  "costs": {
+    "fixed": {
+      "leadership": {
+        "key": "leadership",
+        "label": "فريق القيادة",
+        "items": [
+          {
+            "label": "CEO / المؤسس",
+            "amount": 0,
+            "category": "leadership",
+            "details": "الاستراتيجية، جمع التمويل، الرؤية. الراتب: 0-6,000 ريال/شهر (قد يكون بدون راتب في البداية أو راتب رمزي)"
+          },
+          {
+            "label": "CTO / مدير التقنية",
+            "amount": 6000,
+            "category": "leadership",
+            "details": "تطوير المنتج، الاستراتيجية التقنية. الراتب: 5,000-6,000 ريال/شهر (متوسط 5,500)"
+          },
+          {
+            "label": "مدير التسويق (1)",
+            "amount": 3500,
+            "category": "leadership",
+            "details": "النمو، الاستحواذ، العلامة التجارية. الراتب: 3,000-4,000 ريال/شهر (متوسط 3,500)"
+          },
+          {
+            "label": "مدير التسويق (2)",
+            "amount": 3500,
+            "category": "leadership",
+            "details": "استراتيجية المحتوى، إدارة الفريق. الراتب: 3,000-4,000 ريال/شهر (متوسط 3,500)"
+          },
+          {
+            "label": "مدير عمليات",
+            "amount": 3000,
+            "category": "leadership",
+            "details": "خبرة 3-4 سنوات: إدارة العمليات، التنسيق. الراتب: 2,500-3,000 ريال/شهر (متوسط 2,750)"
+          }
+        ],
+        "note": "فريق القيادة - 5 أشخاص (CEO, CTO, مدير التسويق (1), مدير التسويق (2), مدير عمليات)"
+      },
+      "technical": {
+        "key": "technical",
+        "label": "الفريق التقني",
+        "items": [
+          {
+            "label": "مطور Full-Stack (1) - Next.js + TypeScript",
+            "amount": 0,
+            "category": "technical",
+            "details": "خبرة 3-5 سنوات: تطوير المنصة، API. الراتب: 3,000-4,000 ريال/شهر (متوسط 3,500)"
+          },
+          {
+            "label": "مطور Full-Stack (2) - Next.js + TypeScript",
+            "amount": 0,
+            "category": "technical",
+            "details": "خبرة 3-5 سنوات: تطوير المنصة، API. الراتب: 3,000-4,000 ريال/شهر (متوسط 3,500)"
+          },
+          {
+            "label": "مطور Backend رئيسي",
+            "amount": 0,
+            "category": "technical",
+            "details": "خبرة 4-6 سنوات: Backend architecture، قاعدة البيانات، API design. الراتب: 3,500-4,500 ريال/شهر (متوسط 4,000)"
+          },
+          {
+            "label": "مطور React Native",
+            "amount": 1500,
+            "category": "technical",
+            "details": "خبرة 2-4 سنوات: تطوير تطبيقات الجوال. الراتب: 3,000-3,500 ريال/شهر (متوسط 3,250)"
+          },
+          {
+            "label": "مصمم + UI/UX (1)",
+            "amount": 1000,
+            "category": "technical",
+            "details": "خبرة 2-3 سنوات: تصميم واجهات المستخدم. الراتب: 2,000-3,000 ريال/شهر (متوسط 2,500)"
+          },
+          {
+            "label": "مصمم Motion Graphics",
+            "amount": 1200,
+            "category": "technical",
+            "details": "خبرة 2-3 سنوات: تصميم الرسوم المتحركة والجرافيك. الراتب: 2,000-3,000 ريال/شهر (متوسط 2,500)"
+          }
+        ],
+        "note": "الفريق التقني - 6 أشخاص (مطورين Full-Stack, Backend, React Native, مصممين)"
+      },
+      "content": {
+        "key": "content",
+        "label": "فريق المحتوى",
+        "items": [
+          {
+            "label": "كاتب محتوى SEO (1)",
+            "amount": 700,
+            "category": "content",
+            "details": "خبرة 2-3 سنوات: كتابة مقالات SEO بالعربية. الراتب: 1,000-1,500 ريال/شهر (متوسط 1,250)"
+          },
+          {
+            "label": "كاتب محتوى SEO (2)",
+            "amount": 700,
+            "category": "content",
+            "details": "خبرة 2-3 سنوات: كتابة مقالات SEO بالعربية. الراتب: 1,000-1,500 ريال/شهر (متوسط 1,250)"
+          }
+        ],
+        "note": "فريق المحتوى - 6 أشخاص (4 كتاب محتوى SEO + 2 محررين)"
+      },
+      "marketingSales": {
+        "key": "marketing-sales",
+        "label": "فريق التسويق والمبيعات",
+        "items": [
+          {
+            "label": "مندوب مبيعات (1)",
+            "amount": 0,
+            "category": "sales",
+            "details": "خبرة 2-3 سنوات: التواصل مع العملاء، إغلاق الصفقات. الراتب: 1,500-2,000 ريال/شهر + عمولات (متوسط 1,750)"
+          }
+        ],
+        "note": "فريق التسويق والمبيعات - 5 أشخاص (أخصائي تسويق، مدير سوشيال ميديا، 2 مندوبي مبيعات، مدير نجاح العملاء)"
+      },
+      "operations": {
+        "key": "operations",
+        "label": "فريق العمليات",
+        "items": [
+          {
+            "label": "دعم العملاء",
+            "amount": 0,
+            "category": "operations",
+            "details": "خبرة 1-2 سنوات: دعم العملاء، حل المشاكل. الراتب: 1,000-1,250 ريال/شهر (متوسط 1,125)"
+          }
+        ],
+        "note": "فريق العمليات - 2 أشخاص (دعم العملاء، محلل بيانات بدوام جزئي)"
+      },
+      "infrastructure": {
+        "key": "infrastructure",
+        "label": "البنية التحتية والتقنية",
+        "items": [
+          {
+            "label": "استضافة Next.js (Vercel Pro)",
+            "amount": 200,
+            "category": "hosting",
+            "details": "خطة Pro: 20$ شهرياً (~75 ريال) + Bandwidth إضافي (~125 ريال) = ~200 ريال/شهر"
+          },
+          {
+            "label": "قاعدة بيانات (MongoDB Atlas M10)",
+            "amount": 214,
+            "category": "database",
+            "details": "MongoDB Atlas M10: 57$ شهرياً (~214 ريال) - خطة إنتاج مناسبة: 2GB RAM، 10GB Storage، Backup تلقائي، Monitoring"
+          },
+          {
+            "label": "تخزين الصور والوسائط (Cloudinary)",
+            "amount": 0,
+            "category": "storage",
+            "details": "Cloudinary Free Plan: مجاني - 25GB تخزين، 25GB bandwidth/شهر. محتوى المقالات في MongoDB، الصور والوسائط في Cloudinary"
+          },
+          {
+            "label": "أدوات SEO (SEMrush Pro)",
+            "amount": 525,
+            "category": "seo-tools",
+            "details": "خطة Pro: 139.95$ شهرياً (~525 ريال) - مناسبة للمستقلين وأصحاب الأعمال الصغيرة، تشمل أدوات SEO وSEM وContent Marketing"
+          },
+          {
+            "label": "Google Analytics 4 + Search Console",
+            "amount": 0,
+            "category": "analytics",
+            "details": "مجاني - أدوات تحليل مجانية من Google"
+          },
+          {
+            "label": "أدوات التطوير (GitHub Pro)",
+            "amount": 40,
+            "category": "development",
+            "details": "GitHub Pro: 4$ شهرياً (~15 ريال) × 2-3 مطورين = ~40 ريال/شهر"
+          },
+          {
+            "label": "GitHub Copilot (AI Coding Assistant)",
+            "amount": 100,
+            "category": "development",
+            "details": "Copilot Business: 19$ شهرياً (~71 ريال) × 1-2 مطورين = ~100 ريال/شهر"
+          },
+          {
+            "label": "أدوات المراقبة (Sentry)",
+            "amount": 80,
+            "category": "monitoring",
+            "details": "خطة Team: 26$ شهرياً (~98 ريال) لمراقبة الأخطاء والأداء"
+          },
+          {
+            "label": "إدارة المشاريع (ClickUp Free)",
+            "amount": 0,
+            "category": "project-management",
+            "details": "ClickUp Free: مجاني - خطة مجانية تشمل المهام الأساسية، الجداول، والتقويمات لعدد محدود من المستخدمين"
+          },
+          {
+            "label": "النطاق و SSL (Vercel)",
+            "amount": 0,
+            "category": "domain",
+            "details": "SSL مجاني مع Vercel - يتم توفير شهادات SSL تلقائياً مع استضافة Vercel (النطاق منفصل)"
+          },
+          {
+            "label": "Email Service (Resend/SendGrid)",
+            "amount": 30,
+            "category": "email",
+            "details": "خدمة إرسال البريد الإلكتروني: ~30 ريال/شهر (حسب الحجم)"
+          }
+        ],
+        "note": "تكاليف البنية التحتية الشهرية الثابتة - محدثة 2025"
+      },
+      "overhead": {
+        "key": "overhead",
+        "label": "المصاريف العامة",
+        "items": [
+          { "label": "إيجار المكتب/مساحة عمل", "amount": 2000, "category": "office" },
+          { "label": "المرافق والإنترنت", "amount": 500, "category": "utilities" },
+          { "label": "التأمين والقانوني", "amount": 500, "category": "legal" },
+          { "label": "مصاريف إدارية متنوعة", "amount": 500, "category": "misc" }
+        ],
+        "note": "المصاريف العامة والإدارية الشهرية"
+      }
+    },
+    "variable": {
+      "marketing": {
+        "key": "marketing",
+        "label": "التسويق والإعلام",
+        "items": [{ "label": "إعلانات Google + Meta", "amount": 5000, "category": "media" }],
+        "note": "تكاليف التسويق والإعلانات - إعلانات Google + Meta"
+      }
+    },
+    "totalMonthly": {
+      "fixed": 53750,
+      "variable": 4500,
+      "base": 58250,
+      "note": "التكاليف الأساسية الشهرية (بدون عمولات ورسوم متغيرة) - محدثة 2025. تُحسب ديناميكياً من: القيادة + التقني + المحتوى + التسويق والمبيعات + العمليات + البنية التحتية + المصاريف العامة"
+    },
+    "byPhase": {
+      "launch": {
+        "months": "0-3",
+        "leadership": 13000,
+        "technical": 15000,
+        "content": 9000,
+        "marketingSales": 10250,
+        "operations": 4750,
+        "infrastructure": 1420,
+        "marketing": 4500,
+        "overhead": 3500,
+        "total": 63170,
+        "note": "مرحلة الإطلاق - التكاليف الأساسية (محدثة 2025). يشمل الفريق الكامل: 24 شخص (4 قيادة + 6 تقني + 6 محتوى + 5 تسويق ومبيعات + 3 عمليات)"
+      },
+      "growth": {
+        "months": "4-6",
+        "team": 25000,
+        "infrastructure": 1200,
+        "marketing": 6000,
+        "overhead": 4000,
+        "total": 36200,
+        "note": "مرحلة النمو - زيادة طفيفة في الفريق والتسويق"
+      },
+      "scale": {
+        "months": "7-12",
+        "team": 50000,
+        "infrastructure": 8000,
+        "marketing": 8000,
+        "overhead": 8000,
+        "total": 66000,
+        "note": "مرحلة التوسع - فريق كامل + بنية تحتية متوسعة"
+      }
+    }
+  },
+
+  "revenue": {
+    "pricingPlans": [
+      {
+        "name": "الباقة الأساسية",
+        "annualPrice": 2499,
+        "currency": "SAR",
+        "articlesPerMonth": 2,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 139,
+        "description": "مقالين شهرياً لمدة 18 شهر"
+      },
+      {
+        "name": "الباقة القياسية",
+        "annualPrice": 3999,
+        "currency": "SAR",
+        "articlesPerMonth": 4,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 222,
+        "description": "4 مقالات شهرياً لمدة 18 شهر"
+      },
+      {
+        "name": "باقة المحترفين",
+        "annualPrice": 6999,
+        "currency": "SAR",
+        "articlesPerMonth": 8,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 389,
+        "description": "8 مقالات شهرياً لمدة 18 شهر"
+      },
+      {
+        "name": "الباقة المميزة",
+        "annualPrice": 9999,
+        "currency": "SAR",
+        "articlesPerMonth": 12,
+        "contentDuration": 18,
+        "monthlyRecognizedRevenue": 556,
+        "description": "12 مقال شهرياً لمدة 18 شهر"
+      }
+    ],
+    "clientDistribution": {
+      "basic": {
+        "percentage": 20,
+        "annualPrice": 2499,
+        "monthlyRecognizedRevenue": 139
+      },
+      "standard": {
+        "percentage": 50,
+        "annualPrice": 3999,
+        "monthlyRecognizedRevenue": 222
+      },
+      "pro": {
+        "percentage": 20,
+        "annualPrice": 6999,
+        "monthlyRecognizedRevenue": 389
+      },
+      "premium": {
+        "percentage": 10,
+        "annualPrice": 9999,
+        "monthlyRecognizedRevenue": 556
+      }
+    },
+    "averageMonthlyPerClient": 272,
+    "averageMonthlyCashFlowPerClient": 408.25,
+    "averageAnnualPrice": 4899,
+    "recognitionModel": {
+      "paymentPeriod": 12,
+      "recognitionPeriod": 18,
+      "monthlyRecognitionRate": 0.0556,
+      "description": "العميل يدفع 12 شهر مقدماً، نحصل على محتوى لـ 18 شهر (6 شهور مجانية). الإيرادات معترف بها شهرياً على 18 شهر"
+    },
+    "year1Target": {
+      "clients": 500,
+      "monthlyRecognizedRevenue": 136085,
+      "annualRevenue": 2449530,
+      "profitMargins": 45,
+      "currency": "SAR"
+    },
+    "projections": [
+      {
+        "month": "0-2",
+        "clients": "10-15",
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": "2,720-4,080",
+        "annualRevenueCollected": "24,990-37,485",
+        "cumulativeAnnualRevenue": "24,990-37,485",
+        "note": "مرحلة التجريب - عملاء أوليون"
+      },
+      {
+        "month": 3,
+        "clients": 30,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 8160,
+        "annualRevenueCollected": 89970,
+        "cumulativeAnnualRevenue": 124960,
+        "note": "إطلاق عام - نمو أولي"
+      },
+      {
+        "month": 6,
+        "clients": 100,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 27200,
+        "annualRevenueCollected": 299900,
+        "cumulativeAnnualRevenue": 424860,
+        "note": "نمو مستقر - اقتراب من نقطة التعادل"
+      },
+      {
+        "month": 9,
+        "clients": 250,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 68000,
+        "annualRevenueCollected": 749750,
+        "cumulativeAnnualRevenue": 1174610,
+        "note": "توسع سريع - بعد نقطة التعادل"
+      },
+      {
+        "month": 12,
+        "clients": 500,
+        "avgMonthlyRecognizedRevenue": 272,
+        "monthlyRecognizedRevenue": 136085,
+        "annualRevenueCollected": 2449530,
+        "cumulativeAnnualRevenue": 2449530,
+        "note": "الهدف السنوي - 500 عميل"
+      }
+    ],
+    "addOns": {
+      "potentialServices": [
+        {
+          "name": "إعادة استخدام المحتوى لوسائل التواصل",
+          "price": 1120,
+          "currency": "SAR",
+          "note": "إضافي شهري"
+        },
+        {
+          "name": "تكامل التسويق عبر البريد الإلكتروني",
+          "price": 750,
+          "currency": "SAR",
+          "note": "إضافي شهري"
+        },
+        {
+          "name": "إنتاج محتوى فيديو",
+          "price": 1875,
+          "currency": "SAR",
+          "note": "إضافي شهري"
+        }
+      ],
+      "adoptionRate": 0.15,
+      "note": "15% من العملاء يشترون إضافات"
+    }
+  },
+
+  "metrics": {
+    "cac": {
+      "target": 300,
+      "range": [200, 400],
+      "currency": "SAR",
+      "paybackPeriod": "1-2 شهر",
+      "note": "بما أن العملاء يدفعون سنوياً مقدماً، استرداد CAC فوري تقريباً"
+    },
+    "ltv": {
+      "value": 4899,
+      "currency": "SAR",
+      "avgLifetime": "18 شهر (دورة اشتراك واحدة)",
+      "calculation": "متوسط السعر السنوي = 4,899 ريال (دفعة واحدة)",
+      "note": "LTV = متوسط السعر السنوي لأن العملاء يدفعون مقدماً"
+    },
+    "ltvCacRatio": {
+      "value": "16:1",
+      "range": "12:1 إلى 24:1",
+      "calculation": "4,899 ÷ 300 = 16.3",
+      "note": "نسبة ممتازة - تعني أن كل ريال مستثمر في التسويق يعود بـ 16 ريال"
+    },
+    "margins": {
+      "gross": {
+        "contentProduction": "40-50%",
+        "platformSaaS": "70-80%",
+        "blended": "60-65%",
+        "note": "هامش إجمالي مختلط"
+      },
+      "net": {
+        "month12": "45%+",
+        "year2": "50-55%",
+        "note": "الهامش الصافي المستهدف"
+      }
+    },
+    "churn": {
+      "target": "<8%",
+      "monthly": "<8%",
+      "industryBenchmark": "10-15%",
+      "retentionStrategy": "حزمة 18 شهر + تركيز على النتائج",
+      "note": "هدف أقل من متوسط الصناعة"
+    },
+    "growth": {
+      "monthlyRecognizedRevenueGrowth": {
+        "months1to3": "20-30%",
+        "months4to6": "15-25%",
+        "months7to12": "10-15%"
+      },
+      "newClientsPerWeek": "5-10",
+      "clientCountMonth12": 500
+    }
+  },
+
+  "investment": {
+    "total": {
+      "min": 600000,
+      "max": 720000,
+      "currency": "SAR"
+    },
+    "breakdown": [
+      {
+        "phase": "رواتب السنة الأولى",
+        "amount": 600000,
+        "description": "50,000 ريال/شهر × 12 شهر = 600,000 ريال",
+        "currency": "SAR"
+      },
+      {
+        "phase": "الأدوات والبنية التحتية (السنة الأولى)",
+        "amount": 96000,
+        "description": "~8,000 ريال/شهر × 12 شهر = ~96,000 ريال",
+        "currency": "SAR"
+      },
+      {
+        "phase": "التسويق والإطلاق",
+        "amount": 24000,
+        "description": "~24,000 ريال (السنة الأولى)",
+        "currency": "SAR"
+      }
+    ],
+    "useOfFunds": {
+      "teamSalaries": "83%",
+      "infrastructure": "13%",
+      "marketing": "3%",
+      "other": "1%"
+    }
+  },
+
+  "breakEven": {
+    "point": "الشهر 8-9",
+    "achievedBy": "الشهر 8-9",
+    "note": "نقطة التعادل تُحسب ديناميكياً: التكاليف الشهرية ÷ متوسط الإيراد الشهري لكل عميل. يتم تحديثها تلقائياً عند تغيير أي من التكاليف."
+  },
+
+  "profitability": {
+    "timeline": [
+      {
+        "phase": "الأشهر 1-6",
+        "status": "مرحلة الاستثمار",
+        "cashFlow": "سلبي",
+        "note": "استثمار أولي - تدفق نقدي سلبي"
+      },
+      {
+        "phase": "الشهر 5-6",
+        "status": "نقطة التعادل",
+        "cashFlow": "متوازن",
+        "note": "الإيرادات = التكاليف"
+      },
+      {
+        "phase": "الأشهر 7-12",
+        "status": "الربحية",
+        "cashFlow": "إيجابي",
+        "margins": "45%+",
+        "note": "نمو في الهوامش والأرباح"
+      },
+      {
+        "phase": "السنة الثانية",
+        "status": "ربحية قوية",
+        "cashFlow": "إيجابي قوي",
+        "margins": "50-55%",
+        "note": "هوامش صافية قوية ومستدامة"
+      }
+    ],
+    "milestones": [
+      {
+        "month": 3,
+        "milestone": "30 عميل",
+        "mrr": "8,160 ريال",
+        "note": "إطلاق عام ناجح"
+      },
+      {
+        "month": 6,
+        "milestone": "100 عميل + نقطة التعادل",
+        "mrr": "27,200 ريال",
+        "note": "تحقيق التعادل المالي"
+      },
+      {
+        "month": 12,
+        "milestone": "500 عميل",
+        "mrr": "136,085 ريال",
+        "note": "الهدف السنوي - ربحية قوية"
+      }
+    ]
+  },
+
+  "cashFlow": {
+    "model": "الدفع السنوي مقدماً",
+    "description": "العملاء يدفعون الرسوم السنوية كاملة مقدماً، مما يوفر تدفق نقدي إيجابي فوري",
+    "advantages": [
+      "تدفق نقدي إيجابي فوري",
+      "تقليل مخاطر عدم الدفع",
+      "تمويل النمو من الإيرادات",
+      "استرداد CAC فوري"
+    ],
+    "deferredRevenue": {
+      "description": "الإيرادات معترف بها على 18 شهر (دفع 12 شهر)",
+      "recognitionRate": "55.6% من الدفعة السنوية معترف بها في السنة الأولى",
+      "note": "يتم الاعتراف بالإيرادات تدريجياً على مدى 18 شهر"
+    }
+  },
+
+  "notes": [
+    "جميع الأرقام بالريال السعودي (SAR)",
+    "التكاليف الشهرية ثابتة في المرحلة الأولى (32,350 ريال/شهر)",
+    "مع نمو عدد العملاء، قد نحتاج لتوسيع الفريق (تكاليف متغيرة)",
+    "نقطة التعادل تُحسب ديناميكياً بناءً على متوسط الإيراد الشهري لكل عميل (272 ريال)",
+    "نموذج الإيرادات: دفع سنوي مقدماً (12 شهر) + تسليم محتوى لـ 18 شهر",
+    "الإيرادات معترف بها شهرياً على مدى 18 شهر وفقاً لمعايير المحاسبة",
+    "CAC منخفض (200-400 ريال) مع LTV:CAC ratio ممتاز (12:1 إلى 24:1)",
+    "الهدف: 500 عميل بحلول الشهر 12 مع إيرادات معترف بها 136,085 ريال/شهر",
+    "الهوامش المستهدفة: 45%+ صافي بحلول الشهر 12، 50-55% في السنة الثانية"
+  ]
+}

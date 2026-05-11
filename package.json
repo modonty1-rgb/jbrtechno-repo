@@ -1,0 +1,26 @@
+{
+  "name": "jbrtechno",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean",
+    "db:generate": "turbo db:generate",
+    "db:push": "pnpm --filter @jbrtechno/database db:push",
+    "db:seed": "pnpm --filter @jbrtechno/database db:seed",
+    "db:seed:positions": "pnpm --filter @jbrtechno/database db:seed:positions"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "prettier": "^3.4.2"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}

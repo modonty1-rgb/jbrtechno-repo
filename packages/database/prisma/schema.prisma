@@ -1,0 +1,460 @@
+// Prisma schema for MongoDB — canonical source for @jbrtechno/database
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Applicant Information
+  applicantName      String
+  email              String
+  phone              String
+  position           String
+  yearsOfExperience  Int
+  availabilityDate   DateTime?
+  currentLocation    String?
+  arabicProficiency  String?
+  englishProficiency String?
+  consentToDataUsage Boolean   @default(false)
+
+  // Optional URLs
+  portfolioUrl String?
+  githubUrl    String?
+  linkedinUrl  String?
+
+  // Skills and Documents
+  skills      String[]
+  coverLetter String
+  cvUrl       String
+  cvPublicId  String
+
+  // Personal Image
+  profileImageUrl      String
+  profileImagePublicId String
+
+  // Application Status
+  status     ApplicationStatus @default(PENDING)
+  adminNotes String?
+
+  // Interview Response
+  lastJobExitReason            String?
+  lastSalary                   String?
+  expectedSalary               String?
+  canWorkHard                  Boolean?
+  noticePeriod                 String?
+  preferredWorkLocation        String?
+  whyInterestedInPosition      String?
+  questionsAboutRole           String?
+  willingnessToRelocate        Boolean?
+  bestInterviewTime            String?
+  interviewResponseSubmittedAt DateTime?
+  scheduledInterviewDate       DateTime?
+  appointmentConfirmed         Boolean   @default(false)
+
+  // Metadata
+  locale String @default("ar")
+
+  // Relations
+  staff Staff?
+
+  @@index([status])
+  @@index([position])
+  @@index([email])
+  @@index([createdAt])
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  ACCEPTED
+  REJECTED
+}
+
+model Phase1Requirement {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  category  String
+  title     String
+  status    RequirementStatus   @default(PENDING)
+  priority  RequirementPriority
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([category])
+  @@index([status])
+}
+
+enum RequirementStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum RequirementPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model Transaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type             TransactionType
+  amount           Float
+  description      String
+  categoryId       String?         @db.ObjectId
+  categoryRelation Category?       @relation("TransactionCategory", fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  date             DateTime
+
+  invoiceImageUrl      String?
+  invoiceImagePublicId String?
+
+  @@index([type])
+  @@index([date])
+  @@index([categoryId])
+  @@index([createdAt])
+}
+
+enum TransactionType {
+  EXPENSE
+  REVENUE
+}
+
+model ContactMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fullName String
+  email    String
+  phone    String?
+  subject  String
+  message  String
+  locale   String  @default("en")
+  source   String  @default("contact-form")
+
+  @@index([createdAt])
+  @@index([locale])
+}
+
+model InterviewResult {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applicationId   String                @db.ObjectId
+  interviewDate   DateTime
+  result          InterviewResultStatus
+  rating          Int?
+  interviewerName String?
+  strengths       String[]
+  weaknesses      String[]
+  notes           String?
+  recommendation  String?
+
+  @@unique([applicationId])
+  @@index([result])
+  @@index([interviewDate])
+}
+
+enum InterviewResultStatus {
+  PASSED
+  FAILED
+  PENDING
+}
+
+model Staff {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employeeId String?
+  department String?
+  hireDate   DateTime
+  salary     Float?
+  status     StaffStatus
+  notes      String?
+
+  username           String?
+  officialEmail      String?
+  trialStartDate     DateTime?
+  trialEndDate       DateTime?
+  trialMonths        Int?
+  trialSalary        Float?
+  ndaSignedDate      DateTime?
+  contractSignedDate DateTime?
+  currency           String    @default("SAR")
+  emergencyContact1  Json?
+  emergencyContact2  Json?
+
+  clockifyUserId String?
+
+  applicationId String?      @unique @db.ObjectId
+  application   Application? @relation(fields: [applicationId], references: [id])
+  userId        String?      @unique @db.ObjectId
+  user          User?        @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@index([department])
+  @@index([employeeId])
+  @@index([clockifyUserId])
+}
+
+enum StaffStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email          String    @unique
+  password       String
+  name           String?
+  role           UserRole
+  isActive       Boolean   @default(true)
+  lastLogin      DateTime?
+  avatarUrl      String?
+  avatarPublicId String?
+
+  staff       Staff?
+  permissions UserRoutePermission[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  STAFF
+}
+
+model UserRoutePermission {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  route  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, route])
+  @@index([userId])
+  @@index([route])
+}
+
+model Category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  label    String
+  parentId String?      @db.ObjectId
+  type     CategoryType
+  order    Int          @default(0)
+
+  costs        Cost[]
+  children     Category[]    @relation("CategoryChildren")
+  parent       Category?     @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transactions Transaction[] @relation("TransactionCategory")
+
+  @@index([type])
+  @@index([parentId])
+}
+
+enum CategoryType {
+  EXPENSE
+  REVENUE
+}
+
+model Cost {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  amount      Float
+  type        CostType
+  categoryId  String?   @db.ObjectId
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  description String?
+  date        DateTime
+
+  @@index([type])
+  @@index([categoryId])
+  @@index([date])
+}
+
+enum CostType {
+  FIXED
+  VARIABLE
+}
+
+model SourceOfIncome {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  type        SourceOfIncomeType
+  amount      Float
+  description String?
+  date        DateTime
+
+  @@index([type])
+  @@index([date])
+}
+
+enum SourceOfIncomeType {
+  SUBSCRIPTION
+  ONE_TIME
+  RECURRING
+}
+
+model Task {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  status      TaskStatus
+  priority    TaskPriority
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  createdByUserId  String @db.ObjectId
+  assignedToUserId String @db.ObjectId
+
+  @@index([status])
+  @@index([priority])
+  @@index([createdByUserId])
+  @@index([assignedToUserId])
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model ManagementNote {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title           String
+  content         String
+  type            NoteType
+  targetAudience  TargetAudience
+  targetUserId    String?        @db.ObjectId
+  department      String?
+  isImportant     Boolean        @default(false)
+  rewardAmount    Float?
+  rewardCurrency  String?
+  readBy          String[]
+  parentNoteId    String?        @db.ObjectId
+  createdByUserId String         @db.ObjectId
+
+  @@index([type])
+  @@index([targetAudience])
+  @@index([targetUserId])
+  @@index([department])
+  @@index([createdByUserId])
+  @@index([parentNoteId])
+}
+
+enum NoteType {
+  ANNOUNCEMENT
+  TASK
+  REWARD
+  GENERAL
+}
+
+enum TargetAudience {
+  ALL
+  ADMIN
+  STAFF
+  SPECIFIC_USER
+  SPECIFIC_DEPARTMENT
+}
+
+model Position {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title           String   @unique
+  titleEn         String
+  count           Int      @default(1)
+  phase           Int      @default(0)
+  employmentType  String   @default("full-time")
+  salaryMin       Int      @default(0)
+  salaryMax       Int      @default(0)
+  requirements    String[]
+  requirementsEn  String[]
+  filledBy        String?
+  isOpen          Boolean  @default(true)
+  order           Int      @default(0)
+
+  @@index([isOpen])
+  @@index([phase])
+  @@index([order])
+}
+
+model ActivityLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  userId      String       @db.ObjectId
+  type        ActivityType
+  description String
+  metadata    Json?
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  USER_LOGIN
+  USER_LOGOUT
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  USER_ACTIVATED
+  USER_DEACTIVATED
+  STAFF_CREATED
+  STAFF_UPDATED
+  STAFF_DELETED
+  NOTE_CREATED
+  NOTE_UPDATED
+  NOTE_DELETED
+  NOTE_READ
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_COMPLETED
+  PERMISSION_UPDATED
+  POSITION_CREATED
+  POSITION_UPDATED
+  POSITION_DELETED
+  POSITION_TOGGLED
+  OTHER
+}

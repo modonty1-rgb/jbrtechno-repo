@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -NoProfile -Command \"Move-Item -Path 'Homepage' -Destination 'apps/homepage' -Force; Move-Item -Path 'dashboard' -Destination 'apps/dashboard' -Force; Move-Item -Path 'DataLayer' -Destination 'packages/database' -Force; Write-Host 'all moves done'\")",
+      "Bash(powershell -NoProfile -Command \"Remove-Item -Recurse -Force 'apps/homepage/prisma','apps/dashboard/prisma','apps/homepage/lib/prisma.ts','apps/dashboard/lib/prisma.ts' -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force 'apps/homepage/node_modules','apps/dashboard/node_modules' -ErrorAction SilentlyContinue; Write-Host 'cleanup done'\")",
+      "Bash(powershell -NoProfile -Command \"Remove-Item -Recurse -Force 'apps/homepage/pnpm-lock.yaml','apps/dashboard/pnpm-lock.yaml','apps/homepage/.next','apps/dashboard/.next','apps/homepage/tsconfig.tsbuildinfo','apps/dashboard/tsconfig.tsbuildinfo' -ErrorAction SilentlyContinue; Write-Host 'stale files cleaned'\")",
+      "Bash(pnpm --version)",
+      "Bash(tasklist //fi \"imagename eq pnpm.exe\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\w2nad\\.claude\\projects\\c--Users-w2nad-Desktop-dreamToApp-JBRTECHNO"
+    ]
+  }
+}

@@ -18,7 +18,7 @@ export {
   NoteType,
   TargetAudience,
   ActivityType,
-} from "../generated/client";
+} from "@prisma/client";
 
 export type {
   Application,
@@ -36,4 +36,4 @@ export type {
   ManagementNote,
   Position,
   ActivityLog,
-} from "../generated/client";
+} from "@prisma/client";

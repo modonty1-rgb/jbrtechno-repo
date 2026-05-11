@@ -21,12 +21,8 @@
   ],
   "globalPassThroughEnv": ["GITHUB_TOKEN"],
   "tasks": {
-    "db:generate": {
-      "cache": false,
-      "outputs": ["generated/**"]
-    },
     "build": {
-      "dependsOn": ["^db:generate", "^build"],
+      "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_*"],
       "inputs": [
         "$TURBO_DEFAULT$",
@@ -39,15 +35,12 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "dependsOn": ["^db:generate"]
+      "persistent": true
     },
     "lint": {
       "dependsOn": ["^build"]
     },
-    "type-check": {
-      "dependsOn": ["^db:generate"]
-    },
+    "type-check": {},
     "clean": {
       "cache": false
     }

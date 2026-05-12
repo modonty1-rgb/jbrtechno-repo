@@ -7,6 +7,10 @@ import Link from 'next/link';
 import { getAllPositions } from '@/actions/positions';
 import { PublicShell } from '@/components/layout/PublicShell';
 
+// Always read fresh from DB — dashboard toggles (isOpen) must reflect instantly.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function CareersPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations('careers');

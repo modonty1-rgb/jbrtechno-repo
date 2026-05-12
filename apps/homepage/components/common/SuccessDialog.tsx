@@ -88,8 +88,8 @@ export function SuccessDialog({ open, onClose, applicantName, position, locale }
                 </h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {isArabic
-                    ? 'سيقوم فريق الموارد البشرية بمراجعة طلبك والتواصل معك خلال 3-5 أيام عمل'
-                    : 'Our HR team will review your application and contact you within 3-5 business days'}
+                    ? 'في حال تأهلك للمقابلة، سيتم التواصل معك لتحديد موعدها عبر واتساب على الرقم المسجّل في الطلب.'
+                    : 'If you qualify for an interview, we will contact you via WhatsApp on the number you provided to schedule it.'}
                 </p>
               </div>
             </div>
@@ -100,13 +100,13 @@ export function SuccessDialog({ open, onClose, applicantName, position, locale }
             <p className="text-xs text-muted-foreground leading-relaxed">
               {isArabic ? (
                 <>
-                  💡 <span className="font-medium">نصيحة:</span> يرجى التحقق من بريدك الإلكتروني بانتظام (بما في ذلك مجلد البريد العشوائي).
-                  سنرسل لك تحديثات حول حالة طلبك.
+                  📧 <span className="font-medium">إيميل التأكيد:</span> أرسلنا لك إيميل بالتفاصيل.
+                  لو ما وصلك، شيك مجلد <span className="font-medium">Spam / Junk</span>.
                 </>
               ) : (
                 <>
-                  💡 <span className="font-medium">Tip:</span> Please check your email regularly (including spam folder).
-                  We&apos;ll send you updates about your application status.
+                  📧 <span className="font-medium">Confirmation email:</span> We sent you the details.
+                  If you don&apos;t see it, check your <span className="font-medium">Spam / Junk</span> folder.
                 </>
               )}
             </p>

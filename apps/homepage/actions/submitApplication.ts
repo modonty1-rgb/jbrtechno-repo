@@ -8,6 +8,7 @@ import {
 } from '@/lib/validations/application';
 import { ZodError } from 'zod';
 import { sendTelegramApplicationNotification } from './sendTelegramNotification';
+import { sendApplicantConfirmationEmail } from './sendApplicantEmail';
 
 export interface SubmitApplicationResult {
   success: boolean;
@@ -61,21 +62,29 @@ export async function submitApplication(
     });
 
 
-    await sendTelegramApplicationNotification({
-      applicantName: validatedData.applicantName,
-      phone: validatedData.phone,
-      email: validatedData.email,
-      position: validatedData.position,
-      yearsOfExperience: validatedData.yearsOfExperience,
-      availabilityDate: validatedData.availabilityDate,
-      currentLocation: validatedData.currentLocation,
-      arabicProficiency: validatedData.arabicProficiency,
-      englishProficiency: validatedData.englishProficiency,
-      skills: validatedData.skills,
-      message: validatedData.coverLetter,
-      lastSalary: validatedData.lastSalary,
-      expectedSalary: validatedData.expectedSalary,
-    });
+    // Fire both notifications in parallel — neither blocks the response.
+    await Promise.allSettled([
+      sendTelegramApplicationNotification({
+        applicantName: validatedData.applicantName,
+        phone: validatedData.phone,
+        email: validatedData.email,
+        position: validatedData.position,
+        yearsOfExperience: validatedData.yearsOfExperience,
+        availabilityDate: validatedData.availabilityDate,
+        currentLocation: validatedData.currentLocation,
+        arabicProficiency: validatedData.arabicProficiency,
+        englishProficiency: validatedData.englishProficiency,
+        skills: validatedData.skills,
+        message: validatedData.coverLetter,
+        lastSalary: validatedData.lastSalary,
+        expectedSalary: validatedData.expectedSalary,
+      }),
+      sendApplicantConfirmationEmail({
+        applicantName: validatedData.applicantName,
+        email: validatedData.email,
+        position: validatedData.position,
+      }),
+    ]);
 
     return {
       success: true,

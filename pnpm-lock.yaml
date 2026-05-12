@@ -222,6 +222,9 @@ importers:
       react-phone-number-input:
         specifier: ^3.4.16
         version: 3.4.16(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      resend:
+        specifier: ^6.6.0
+        version: 6.12.3
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.1

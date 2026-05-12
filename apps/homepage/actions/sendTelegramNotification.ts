@@ -174,7 +174,7 @@ export async function sendTelegramApplicationNotification(
       ? `<b>القيمة التي سيضيفها المرشح:</b>\n${escapeHtml(coverLetterSummary)}`
       : undefined,
     '',
-    `<b>الجوال:</b> ${escapeHtml(payload.phone)}`,
+    `<b>الجوال:</b> <a href="https://wa.me/${escapeHtml(payload.phone.replace(/^\+/, ''))}">${escapeHtml(payload.phone)}</a> (افتح واتساب 💬)`,
     `<b>البريد:</b> ${escapeHtml(payload.email)}`,
     '',
     `<i>أُرسل في: ${escapeHtml(sentAt)}</i>`,

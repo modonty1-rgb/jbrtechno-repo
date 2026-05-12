@@ -21,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@jbrtechno/ui';
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 export default function ApplyPage() {
   const params = useParams();
@@ -136,6 +138,15 @@ export default function ApplyPage() {
 
     if (!acknowledged) {
       setError(locale === 'ar' ? 'يرجى قراءة المتطلبات والموافقة عليها' : 'Please acknowledge the requirements');
+      return;
+    }
+
+    if (!formData.phone || !isValidPhoneNumber(formData.phone)) {
+      setError(
+        locale === 'ar'
+          ? 'يرجى إدخال رقم واتساب صحيح بصيغة دولية (اختر الدولة من القائمة)'
+          : 'Please enter a valid WhatsApp number in international format (pick country from list)'
+      );
       return;
     }
 
@@ -415,21 +426,25 @@ export default function ApplyPage() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="phone" className="text-sm font-medium">
+                <div className="space-y-2" dir="ltr">
+                  <label htmlFor="phone" className="text-sm font-medium block" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                     {t('phone')} <span className="text-destructive">*</span>
                   </label>
-                  <input
+                  <PhoneInput
                     id="phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    required
+                    international
+                    defaultCountry="SA"
+                    countryCallingCodeEditable={false}
                     value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border rounded-md bg-background"
-                    placeholder={t('phonePlaceholder')}
+                    onChange={(value) => setFormData((prev) => ({ ...prev, phone: value ?? '' }))}
+                    className="phone-input-jbr"
+                    placeholder={locale === 'ar' ? 'اختر الدولة ثم أدخل رقمك' : 'Pick country, then enter your number'}
                   />
+                  {formData.phone && !isValidPhoneNumber(formData.phone) && (
+                    <p className="text-xs text-destructive" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                      {locale === 'ar' ? 'رقم غير صحيح للدولة المختارة' : 'Invalid number for the selected country'}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

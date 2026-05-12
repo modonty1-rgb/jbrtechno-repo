@@ -21,8 +21,10 @@ export const applicationSchema = z.object({
   email: z.string().email('Invalid email address'),
   phone: z
     .string()
-    .min(8, 'Phone number must be at least 8 characters')
-    .max(20),
+    .regex(
+      /^\+[1-9]\d{7,15}$/,
+      'Phone must be in international E.164 format (e.g., +966500000000)',
+    ),
   position: z.string().min(2, 'Position is required'),
   yearsOfExperience: z
     .number()

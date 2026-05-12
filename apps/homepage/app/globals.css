@@ -315,3 +315,52 @@
   }
 }
 
+
+/* react-phone-number-input — make it look like a regular shadcn input */
+.phone-input-jbr {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: 0.375rem;
+  background: hsl(var(--background));
+  direction: ltr;
+}
+.phone-input-jbr .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.phone-input-jbr .PhoneInputCountryIcon {
+  width: 24px;
+  height: 18px;
+  box-shadow: 0 0 0 1px hsl(var(--border));
+  border-radius: 2px;
+}
+.phone-input-jbr .PhoneInputCountrySelect {
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 14px;
+}
+.phone-input-jbr .PhoneInputCountrySelectArrow {
+  width: 8px;
+  height: 8px;
+  margin-inline: 4px;
+  opacity: 0.6;
+}
+.phone-input-jbr input.PhoneInputInput {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  min-width: 0;
+}
+.phone-input-jbr input.PhoneInputInput::placeholder {
+  color: hsl(var(--muted-foreground));
+}

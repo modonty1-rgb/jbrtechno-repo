@@ -494,18 +494,24 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                 {contentPositions.map((position, index) => {
                   const requirements = locale === 'ar' ? position.requirements : position.requirementsEn;
                   const positionId = (locale === 'ar' ? position.title : position.titleEn).toLowerCase().replace(/\s+/g, '-');
+                  const isClosed = !position.isOpen;
+                  const isFilled = !!position.filledBy || isClosed;
                   return (
                     <Card
                       key={index}
                       id={positionId}
-                      className="scroll-mt-24 border-2 border-border hover:border-primary/40 bg-card transition-all duration-300 hover:shadow-xl group hover:-translate-y-1"
+                      className={`scroll-mt-24 border-2 transition-all duration-300 group hover:-translate-y-1 ${
+                        isFilled
+                          ? 'border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30'
+                          : 'border-border hover:border-primary/40 bg-card hover:shadow-xl'
+                      }`}
                     >
                       <CardHeader className="space-y-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <CardTitle className="text-xl mb-3 flex items-center gap-2">
                               {locale === 'ar' ? position.title : position.titleEn}
-                              <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                              {!isFilled && <Sparkles className="h-4 w-4 text-primary animate-pulse" />}
                             </CardTitle>
                             <div className="flex gap-2 flex-wrap">
                               {position.employmentType && (
@@ -517,9 +523,16 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                               <Badge variant="default" className="shadow-sm">
                                 {position.count} {locale === 'ar' ? 'وظيفة' : 'position(s)'}
                               </Badge>
-                              <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30">
-                                {t('positions.vacant')}
-                              </Badge>
+                              {isFilled ? (
+                                <Badge className={isClosed ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-400' : 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30'}>
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  {isClosed ? (locale === 'ar' ? 'اكتمل الفريق' : 'Team Complete') : t('positions.filled')}
+                                </Badge>
+                              ) : (
+                                <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30">
+                                  {t('positions.vacant')}
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -561,18 +574,20 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                             })}
                           </ul>
                         </div>
-                        <div className="pt-4 border-t">
-                          <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
-                            <Button className="w-full group/btn relative overflow-hidden" size="lg">
-                              <span className="relative z-10 flex items-center justify-center gap-2">
-                                <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                                {t('positions.applyNow')}
-                                <TrendingUp className="h-4 w-4 group-hover/btn:translate-y-[-2px] transition-transform" />
-                              </span>
-                              <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary-foreground/10 to-primary/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700" />
-                            </Button>
-                          </Link>
-                        </div>
+                        {!isFilled && (
+                          <div className="pt-4 border-t">
+                            <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                              <Button className="w-full group/btn relative overflow-hidden" size="lg">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
+                                  <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                                  {t('positions.applyNow')}
+                                  <TrendingUp className="h-4 w-4 group-hover/btn:translate-y-[-2px] transition-transform" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary-foreground/10 to-primary/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700" />
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   );

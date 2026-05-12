@@ -63,7 +63,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
             {/* CTA Buttons — Visit Modonty + Join Us */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <a href="https://modonty.com" target="_blank" rel="noopener noreferrer">
+              <a href="/api/go/modonty" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="gap-2 px-8 py-6 text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
                   🌐 {t('visitModonty')}
                   <ExternalLink className="h-5 w-5 group-hover:translate-x-1 transition-transform" />

@@ -7,7 +7,7 @@ import {
   ApplicationFormInput,
 } from '@/lib/validations/application';
 import { ZodError } from 'zod';
-import { sendWhatsAppNotification } from './sendWhatsAppNotification';
+import { sendTelegramApplicationNotification } from './sendTelegramNotification';
 
 export interface SubmitApplicationResult {
   success: boolean;
@@ -61,7 +61,7 @@ export async function submitApplication(
     });
 
 
-    await sendWhatsAppNotification({
+    await sendTelegramApplicationNotification({
       applicantName: validatedData.applicantName,
       phone: validatedData.phone,
       email: validatedData.email,

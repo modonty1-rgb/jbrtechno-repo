@@ -434,6 +434,7 @@ export default function ApplyPage() {
                     id="phone"
                     international
                     defaultCountry="SA"
+                    countries={['SA', 'EG']}
                     countryCallingCodeEditable={false}
                     value={formData.phone}
                     onChange={(value) => setFormData((prev) => ({ ...prev, phone: value ?? '' }))}

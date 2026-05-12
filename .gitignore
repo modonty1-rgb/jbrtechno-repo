@@ -53,6 +53,8 @@ Thumbs.db
 
 # --- Playwright MCP snapshots (local test artifacts) ---
 .playwright-mcp/
+# Block ad-hoc screenshots at root from polluting commits
+/*.png
 
 # --- Claude Code (per-developer settings, at any depth) ---
 **/.claude/settings.local.json

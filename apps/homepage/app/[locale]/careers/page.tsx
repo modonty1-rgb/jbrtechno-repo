@@ -1,20 +1,50 @@
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
+import { waitUntil } from '@vercel/functions';
 import { Card, CardContent, CardHeader, CardTitle } from '@jbrtechno/ui';
 import { Badge } from '@jbrtechno/ui';
 import { Button } from '@jbrtechno/ui';
 import { CheckCircle2, Briefcase, Send, Users, Target, Sparkles, TrendingUp, Code, PenTool, BarChart3, ShoppingCart, Award, ArrowRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getAllPositions } from '@/actions/positions';
+import { sendTelegramCareersPageVisit } from '@/actions/sendTelegramNotification';
 import { PublicShell } from '@/components/layout/PublicShell';
 
 // Always read fresh from DB — dashboard toggles (isOpen) must reflect instantly.
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Heuristic: only notify on real browser document navigations, not prefetches/bots.
+function isRealBrowserVisit(h: Headers): boolean {
+  const fetchDest = h.get('sec-fetch-dest');
+  const purpose = h.get('purpose') || h.get('sec-purpose') || '';
+  const accept = h.get('accept') || '';
+  const ua = (h.get('user-agent') || '').toLowerCase();
+
+  if (purpose.includes('prefetch')) return false;
+  // Browsers send sec-fetch-dest=document on real navigations
+  if (fetchDest && fetchDest !== 'document') return false;
+  // Bots usually don't send text/html accept
+  if (!accept.includes('text/html')) return false;
+  // Common SEO crawlers — skip
+  if (/bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegrambot|preview|lighthouse|pagespeed/i.test(ua)) return false;
+  return true;
+}
+
 export default async function CareersPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations('careers');
   const positions = await getAllPositions();
+
+  const hdr = await headers();
+  if (isRealBrowserVisit(hdr)) {
+    waitUntil(
+      sendTelegramCareersPageVisit({
+        city: hdr.get('x-vercel-ip-city'),
+        country: hdr.get('x-vercel-ip-country'),
+      }).catch((err) => console.error('Careers visit notification failed:', err)),
+    );
+  }
 
   const leadershipPositions = positions.filter(p => p.phase === 0);
   const technicalPositions = positions.filter(p => p.phase === 1);

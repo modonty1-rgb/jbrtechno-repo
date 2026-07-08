@@ -1,325 +1,129 @@
 import { Application } from '@jbrtechno/database';
-import { Card, CardContent, CardHeader } from '@jbrtechno/ui';
-import { ApplicationStatusBadge } from './ApplicationStatusBadge';
-import { Badge } from '@jbrtechno/ui';
-import {
-  Mail,
-  Phone,
-  Calendar,
-  Briefcase,
-  FileText,
-  ExternalLink,
-  User,
-  MapPin,
-  CalendarClock,
-  Languages,
-  ShieldCheck,
-  DollarSign,
-  TrendingUp,
-  CheckCircle2,
-  XCircle,
-} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@jbrtechno/ui';
-import { getCVFileType } from '@/lib/applications';
+import { User, FileText, CalendarClock, MapPin } from 'lucide-react';
+import { Card, Button } from '@jbrtechno/ui';
 import { cn } from '@jbrtechno/shared';
-import { formatTimeWithArabicTime } from '@/helpers/formatDateTime';
-
-type ExtendedApplication = Application & {
-  availabilityDate?: Date | string | null;
-  currentLocation?: string | null;
-  arabicProficiency?: string | null;
-  englishProficiency?: string | null;
-  consentToDataUsage?: boolean | null;
-  lastSalary?: string | null;
-  expectedSalary?: string | null;
-  interviewResponseSubmittedAt?: Date | string | null;
-  scheduledInterviewDate?: Date | string | null;
-};
+import { ApplicationStatusBadge } from './ApplicationStatusBadge';
+import { WhatsAppIcon } from './WhatsAppIcon';
+import { formatRelativeAr, formatFullDateAr } from '@/helpers/relativeDate';
+import {
+  statusAccentClass,
+  whatsappHref,
+  experienceLabel,
+  languageLabel,
+  interviewLabel,
+  EXPECTED_SALARY_CHIP,
+  LAST_SALARY_CHIP,
+  NOT_REPLIED_TOOLTIP,
+} from './applicationDisplay';
 
 interface ApplicationCardProps {
-  application: ExtendedApplication;
-  locale: string;
+  application: Application;
 }
 
-export function ApplicationCard({ application, locale }: ApplicationCardProps) {
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(application.createdAt));
-
-  const formattedAvailability = application.availabilityDate
-    ? new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }).format(new Date(application.availabilityDate))
-    : null;
-
-  const languageLabel = (value: string | null | undefined) => {
-    if (!value) return null;
-    const map: Record<string, string> = {
-      excellent: 'ممتاز',
-      very_good: 'جيد جدًا',
-      good: 'جيد',
-      fair: 'مقبول',
-    };
-    return map[value] ?? value;
-  };
-
-  const hasValidInterviewDate = (date: Date | string | null | undefined): boolean => {
-    if (!date) return false;
-    if (date === 'null' || date === 'undefined') return false;
-    if (typeof date === 'string' && date.trim() === '') return false;
-    try {
-      const parsedDate = new Date(date);
-      return !isNaN(parsedDate.getTime());
-    } catch {
-      return false;
-    }
-  };
-
-  const hasNewInterviewResponse = Boolean(application.interviewResponseSubmittedAt);
-  const hasInterview = hasValidInterviewDate(application.scheduledInterviewDate);
+export function ApplicationCard({ application }: ApplicationCardProps) {
+  const interview = interviewLabel(application.scheduledInterviewDate);
+  const hasReplied = Boolean(application.interviewResponseSubmittedAt);
+  const arabic = languageLabel(application.arabicProficiency);
+  const english = languageLabel(application.englishProficiency);
 
   return (
-    <Card
-      className={cn(
-        'hover:shadow-lg transition-shadow',
-        hasInterview && 'border-2 border-purple-500',
-        !hasInterview && hasNewInterviewResponse && 'border-2 border-green-500'
-      )}
-    >
-      <div className="px-6 pt-4 pb-2">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          {hasNewInterviewResponse ? (
-            <div className="flex items-center gap-2 text-green-600">
-              <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">
-                تم الرد
+    <Card className="relative overflow-hidden transition-colors hover:border-primary/50">
+      <span aria-hidden className={cn('absolute inset-y-0 start-0 w-1', statusAccentClass(application.status))} />
+
+      <div className="flex items-center gap-3 px-5 pt-4 pb-2.5">
+        {application.profileImageUrl ? (
+          <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
+            <Image src={application.profileImageUrl} alt={application.applicantName} fill sizes="48px" className="object-cover" />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center shrink-0">
+            <User className="h-6 w-6 text-muted-foreground" />
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-[15.5px] truncate">{application.applicantName}</h3>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span title={formatFullDateAr(application.createdAt)}>قدّم {formatRelativeAr(application.createdAt)}</span>
+            {application.currentLocation && (
+              <span className="inline-flex items-center gap-0.5 truncate">
+                <MapPin className="h-3 w-3 shrink-0" />
+                {application.currentLocation}
               </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <XCircle className="h-5 w-5" />
-              <span className="text-sm font-medium">
-                لم يتم الرد
-              </span>
-            </div>
+            )}
+          </div>
+        </div>
+        <ApplicationStatusBadge status={application.status} locale="ar" className="shrink-0" />
+      </div>
+
+      <div className="px-5 pb-3 space-y-2 text-[13px] text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span>
+            خبرة <b className="text-foreground font-bold">{experienceLabel(application.yearsOfExperience)}</b>
+          </span>
+          {arabic && (
+            <span>
+              · العربية <b className="text-foreground font-bold">{arabic}</b>
+            </span>
+          )}
+          {english && (
+            <span>
+              · الإنجليزية <b className="text-foreground font-bold">{english}</b>
+            </span>
+          )}
+          {interview && (
+            <span className="inline-flex items-center gap-1 text-[11.5px] font-bold px-2.5 py-0.5 rounded-full border border-[hsl(262_83%_65%/.4)] bg-[hsl(262_83%_65%/.12)] text-[hsl(262_83%_65%)]">
+              <CalendarClock className="h-3 w-3" />
+              {interview}
+            </span>
+          )}
+          {!hasReplied && (
+            <span className="text-warning cursor-help" title={NOT_REPLIED_TOOLTIP}>⚠ ما جاوب الأسئلة</span>
           )}
         </div>
-        {application.status === 'ACCEPTED' && (
-          <div className="flex items-center justify-center gap-1.5 text-xs mb-2">
-            {hasValidInterviewDate(application.scheduledInterviewDate) ? (
-              <>
-                <CalendarClock className="h-3.5 w-3.5 text-primary" />
-                <span className="text-muted-foreground font-medium">
-                  {`${new Intl.DateTimeFormat('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                    }).format(new Date(application.scheduledInterviewDate!))} - ${formatTimeWithArabicTime(application.scheduledInterviewDate!)}`}
-                </span>
-              </>
-            ) : (
-              <>
-                <CalendarClock className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-muted-foreground italic">
-                  لم يتم تحديد موعد بعد
-                </span>
-              </>
+
+        {(application.expectedSalary || application.lastSalary) && (
+          <div className="flex flex-wrap gap-2">
+            {application.expectedSalary && (
+              <span className={cn(EXPECTED_SALARY_CHIP, 'max-w-full')} title={`الراتب المتوقع: ${application.expectedSalary}`}>
+                متوقع {application.expectedSalary}
+              </span>
+            )}
+            {application.lastSalary && (
+              <span className={cn(LAST_SALARY_CHIP, 'max-w-full')} title={`الراتب السابق: ${application.lastSalary}`}>
+                سابق {application.lastSalary}
+              </span>
             )}
           </div>
         )}
-        <ApplicationStatusBadge
-          status={application.status}
-          locale={locale}
-          className="w-full justify-center py-2 text-sm"
-        />
       </div>
-      <CardHeader className="pt-4 pb-3">
-        <div className="flex items-start gap-4">
-          <div className="flex items-start gap-3 flex-1">
-            {/* Profile Image */}
-            <div className="flex-shrink-0">
-              {application.profileImageUrl ? (
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20">
-                  <Image
-                    src={application.profileImageUrl}
-                    alt={application.applicantName}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                  <User className="h-8 w-8 text-muted-foreground" />
-                </div>
-              )}
-            </div>
 
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-lg mb-1 truncate">{application.applicantName}</h3>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <Briefcase className="h-4 w-4 flex-shrink-0" />
-                <span className="truncate">{application.position}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Mail className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{application.email}</span>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Phone className="h-4 w-4 flex-shrink-0" />
-          <span>{application.phone}</span>
-        </div>
-
-        {application.currentLocation && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{application.currentLocation}</span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 flex-shrink-0" />
-          <span>{formattedDate}</span>
-        </div>
-
-        {formattedAvailability && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CalendarClock className="h-4 w-4 flex-shrink-0" />
-            <span>
-              {locale === 'ar' ? 'متاح بدءًا من:' : 'Available from:'}{' '}
-              {formattedAvailability}
-            </span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">
-            {locale === 'ar' ? 'سنوات الخبرة:' : 'Experience:'}
-          </span>
-          <Badge variant="secondary">{application.yearsOfExperience} {locale === 'ar' ? 'سنة' : 'years'}</Badge>
-        </div>
-
-        {(application.arabicProficiency || application.englishProficiency) && (
-          <div className="flex items-start gap-2 text-sm text-muted-foreground">
-            <Languages className="h-4 w-4 flex-shrink-0 mt-0.5" />
-            <div className="flex flex-wrap gap-2">
-              {application.arabicProficiency && (
-                <Badge variant="outline">
-                  العربية: {languageLabel(application.arabicProficiency)}
-                </Badge>
-              )}
-              {application.englishProficiency && (
-                <Badge variant="outline">
-                  الإنجليزية: {languageLabel(application.englishProficiency)}
-                </Badge>
-              )}
-            </div>
-          </div>
-        )}
-
-        {application.consentToDataUsage && (
-          <div className="flex items-center gap-2 text-xs text-primary">
-            <ShieldCheck className="h-4 w-4 flex-shrink-0" />
-            <span>
-              تمت الموافقة على استخدام البيانات
-            </span>
-          </div>
-        )}
-
-        {/* Salary Information */}
-        {(application.lastSalary || application.expectedSalary) && (
-          <div className="pt-3 border-t">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg p-3 space-y-2.5 border border-green-200/50 dark:border-green-900/30">
-              {application.lastSalary && (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-blue-100 dark:bg-blue-900/30">
-                      <DollarSign className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {locale === 'ar' ? 'الراتب الأخير' : 'Last Salary'}
-                    </span>
-                  </div>
-                  <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold text-sm px-3 py-1">
-                    {application.lastSalary}
-                  </Badge>
-                </div>
-              )}
-              {application.expectedSalary && (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-green-100 dark:bg-green-900/30">
-                      <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {locale === 'ar' ? 'الراتب المتوقع' : 'Expected Salary'}
-                    </span>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-bold text-sm px-3 py-1">
-                    {application.expectedSalary}
-                  </Badge>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* CV Preview */}
-        <div className="flex items-center gap-2 text-sm">
-          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          <span className="text-muted-foreground mr-2">
-            {locale === 'ar' ? 'السيرة الذاتية:' : 'CV:'}
-          </span>
-          <Badge variant="outline" className="text-xs">
-            {getCVFileType(application.cvUrl)}
-          </Badge>
-          <a
-            href={application.cvUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline flex items-center gap-1 text-xs"
-          >
-            <ExternalLink className="h-3 w-3" />
-            {locale === 'ar' ? 'فتح' : 'Open'}
-          </a>
-        </div>
-
-        <div className="pt-2 border-t">
-          <Link href={`/applications/${application.id}`}>
-            <Button className="w-full" size="sm">
-              {locale === 'ar' ? 'عرض التفاصيل' : 'View Details'}
-            </Button>
-          </Link>
-        </div>
-      </CardContent>
+      <div className="flex items-center gap-1.5 border-t border-border px-5 py-2.5">
+        <a
+          href={whatsappHref(application.phone)}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="تواصل واتساب"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-success/40 text-success transition-colors hover:bg-success/10 hover:border-success"
+        >
+          <WhatsAppIcon className="h-[18px] w-[18px]" />
+        </a>
+        <a
+          href={application.cvUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="السيرة الذاتية"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-border transition-colors hover:bg-muted"
+        >
+          <FileText className="h-4 w-4" />
+        </a>
+        <Link href={`/applications/${application.id}`} className="flex-1">
+          <Button size="sm" className="w-full">
+            عرض التفاصيل
+          </Button>
+        </Link>
+      </div>
     </Card>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

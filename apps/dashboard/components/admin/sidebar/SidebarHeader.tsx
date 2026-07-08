@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { Network, LayoutDashboard, LogOut, ListTodo, Clock, StickyNote } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { cn } from '@jbrtechno/shared';
 import { messages } from '@/helpers/messages';
+import { quickNavLinks } from '@/helpers/quickNavLinks';
+import { getRoleBadgeVariant } from '@/helpers/getRoleBadgeVariant';
 import { buildLocalizedPath } from '@/lib/auth/utils';
 import { UserRole } from '@jbrtechno/database';
 import { Badge } from '@jbrtechno/ui';
@@ -24,31 +26,9 @@ interface SidebarHeaderProps {
   userAvatarUrl?: string | null;
 }
 
-function getRoleBadgeVariant(role: UserRole | undefined) {
-  switch (role) {
-    case UserRole.SUPER_ADMIN:
-      return 'default' as const;
-    case UserRole.STAFF:
-      return 'outline' as const;
-    default:
-      return 'outline' as const;
-  }
-}
-
 export function SidebarHeader({ locale, user, userAvatarUrl }: SidebarHeaderProps) {
   const pathname = usePathname();
-  const dashboardPath = buildLocalizedPath('/', locale);
-  const orgStructurePath = buildLocalizedPath('/organizational-structure', locale);
   const profilePath = buildLocalizedPath('/settings/profile', locale);
-  const myTasksPath = buildLocalizedPath('/tasks/my-tasks', locale);
-  const myTimePath = buildLocalizedPath('/my-time', locale);
-  const notesPath = buildLocalizedPath('/notes', locale);
-  
-  const isDashboardActive = pathname === dashboardPath || pathname === '/';
-  const isOrgStructureActive = pathname?.startsWith(orgStructurePath);
-  const isMyTasksActive = pathname?.startsWith(myTasksPath);
-  const isMyTimeActive = pathname?.startsWith(myTimePath);
-  const isNotesActive = pathname?.startsWith(notesPath);
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/login' });
@@ -74,7 +54,7 @@ export function SidebarHeader({ locale, user, userAvatarUrl }: SidebarHeaderProp
           <button
             onClick={handleLogout}
             className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
+              'flex md:hidden items-center justify-center w-10 h-10 rounded-lg transition-colors',
               'hover:bg-accent hover:text-accent-foreground'
             )}
             title="تسجيل الخروج"
@@ -84,11 +64,12 @@ export function SidebarHeader({ locale, user, userAvatarUrl }: SidebarHeaderProp
         )}
       </div>
 
+      {/* Profile + quick links live in TopNavbar on desktop — mobile drawer only here */}
       {user && (
         <Link
           href={profilePath}
           className={cn(
-            'flex items-center gap-2 p-2 rounded-lg transition-colors',
+            'flex md:hidden items-center gap-2 p-2 rounded-lg transition-colors',
             'hover:bg-accent hover:text-accent-foreground',
             pathname?.startsWith(profilePath) && 'bg-accent text-accent-foreground'
           )}
@@ -111,65 +92,29 @@ export function SidebarHeader({ locale, user, userAvatarUrl }: SidebarHeaderProp
       )}
 
       {user && (
-        <div className="flex items-center gap-2 flex-wrap">
-          <Link
-            href={dashboardPath}
-            className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
-              isDashboardActive && 'bg-accent text-accent-foreground'
-            )}
-            title={messages.admin.dashboard}
-          >
-            <LayoutDashboard className="h-5 w-5" />
-          </Link>
-          <Link
-            href={orgStructurePath}
-            className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
-              isOrgStructureActive && 'bg-accent text-accent-foreground'
-            )}
-            title={messages.admin.organizationalStructure}
-          >
-            <Network className="h-5 w-5" />
-          </Link>
-          <Link
-            href={myTasksPath}
-            className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
-              isMyTasksActive && 'bg-accent text-accent-foreground'
-            )}
-            title="مهامي"
-          >
-            <ListTodo className="h-5 w-5" />
-          </Link>
-          <Link
-            href={myTimePath}
-            className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
-              isMyTimeActive && 'bg-accent text-accent-foreground'
-            )}
-            title="سجل الوقت"
-          >
-            <Clock className="h-5 w-5" />
-          </Link>
-          <Link
-            href={notesPath}
-            className={cn(
-              'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
-              isNotesActive && 'bg-accent text-accent-foreground'
-            )}
-            title={messages.admin.administrativeNotes}
-          >
-            <StickyNote className="h-5 w-5" />
-          </Link>
+        <div className="flex md:hidden items-center gap-2 flex-wrap">
+          {quickNavLinks.map(({ route, title, icon: Icon, exact }) => {
+            const href = buildLocalizedPath(route, locale);
+            const isActive = exact
+              ? pathname === href || pathname === '/'
+              : pathname?.startsWith(href);
+            return (
+              <Link
+                key={route}
+                href={href}
+                className={cn(
+                  'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
+                  'hover:bg-accent hover:text-accent-foreground',
+                  isActive && 'bg-accent text-accent-foreground'
+                )}
+                title={title}
+              >
+                <Icon className="h-5 w-5" />
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
-

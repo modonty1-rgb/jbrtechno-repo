@@ -10,13 +10,11 @@ export const DEFAULT_ROUTES: string[] = [
   '/tasks/my-tasks',
   '/my-time',
   '/notes',
-  '/organizational-structure',
 ];
 
 // Operational routes - Can be assigned to STAFF users by SUPER_ADMIN
 export const OPERATIONAL_ROUTES: AdminRoute[] = [
   { route: '/', label: 'dashboard' },
-  { route: '/organizational-structure', label: 'organizationalStructure' },
   { route: '/positions', label: 'positions' },
   { route: '/applications', label: 'applications' },
   { route: '/applications/interviews', label: 'interviews' },

@@ -38,7 +38,6 @@ export interface SidebarSection {
 
 const routeIcons: Record<string, React.ElementType> = {
   '/': LayoutDashboard,
-  '/organizational-structure': Network,
   '/contact-messages': Mail,
   '/positions': BriefcaseBusiness,
   '/applications': Briefcase,
@@ -64,7 +63,6 @@ const routeIcons: Record<string, React.ElementType> = {
 
 const routeLabels: Record<string, string> = {
   '/': messages.admin.dashboard,
-  '/organizational-structure': messages.admin.organizationalStructure,
   '/contact-messages': messages.admin.contactMessages,
   '/positions': 'الوظائف الشاغرة',
   '/applications': messages.admin.applications,

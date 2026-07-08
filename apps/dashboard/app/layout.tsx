@@ -4,6 +4,7 @@ import { Tajawal } from 'next/font/google';
 import { LayoutWrapper } from '@/components/layout/LayoutWrapper';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { SessionProviderWrapper } from '@/components/layout/SessionProviderWrapper';
+import { UI_RESTORE_SCRIPT } from '@/components/layout/uiState';
 import './globals.css';
 
 export const dynamic = 'force-dynamic';
@@ -39,6 +40,7 @@ export default function RootLayout({
       className={`${tajawal.variable} dark`}
     >
       <body className={tajawal.className}>
+        <script dangerouslySetInnerHTML={{ __html: UI_RESTORE_SCRIPT }} />
         <LayoutWrapper
           dashboardLayout={<DashboardLayout>{children}</DashboardLayout>}
           minimalLayout={<SessionProviderWrapper>{children}</SessionProviderWrapper>}

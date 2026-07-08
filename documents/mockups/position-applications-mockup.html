@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>موكاب — صفحة طلبات الوظيفة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background:hsl(222 47% 5%);--foreground:hsl(210 40% 98%);
+    --card:hsl(222 47% 6%);--muted:hsl(217 33% 17%);--muted-fg:hsl(215 20% 65%);
+    --border:hsl(217 33% 20%);--primary:hsl(217 91% 60%);--primary-fg:hsl(222 47% 5%);
+    --success:hsl(142 76% 45%);--warning:hsl(38 92% 60%);--info:hsl(199 89% 60%);
+    --destructive:hsl(0 84% 60%);--purple:hsl(262 83% 65%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Tajawal',system-ui,sans-serif;background:var(--background);color:var(--foreground);line-height:1.6}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+
+  /* ===== doc chrome (not part of the page design) ===== */
+  .doc-banner{background:linear-gradient(135deg,hsl(217 91% 60% / .15),transparent);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:28px}
+  .doc-banner h1{font-size:22px;font-weight:800}
+  .doc-banner p{color:var(--muted-fg);font-size:14px}
+  .decisions{display:grid;gap:10px;margin-bottom:32px}
+  .decision{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .decision .num{flex-shrink:0;width:26px;height:26px;border-radius:8px;background:var(--primary);color:var(--primary-fg);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .decision b{font-size:14px}
+  .decision p{font-size:13px;color:var(--muted-fg)}
+  .decision .rec{color:var(--success);font-weight:700}
+  .divider{display:flex;align-items:center;gap:12px;margin:34px 0 20px;color:var(--muted-fg);font-size:13px;font-weight:700}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* ===== the page mockup ===== */
+  .page{border:1px dashed hsl(217 91% 60% / .4);border-radius:16px;padding:28px;background:var(--background)}
+  .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--muted-fg);font-size:13px;text-decoration:none;margin-bottom:14px}
+  .backlink:hover{color:var(--foreground)}
+  .pagehead{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .pagehead .ico{width:46px;height:46px;border-radius:12px;background:hsl(217 91% 60% / .15);display:flex;align-items:center;justify-content:center;font-size:22px}
+  .pagehead h2{font-size:26px;font-weight:800}
+  .pagehead .sub{color:var(--muted-fg);font-size:13px}
+
+  /* filter chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 14px}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted-fg);font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--primary)}
+  .chip .n{font-size:15px;font-weight:800;color:var(--foreground)}
+  .chip.active{background:var(--primary);border-color:var(--primary);color:var(--primary-fg)}
+  .chip.active .n{color:var(--primary-fg)}
+  .chip.warn .n{color:var(--warning)} .chip.ok .n{color:var(--success)}
+  .chip.bad .n{color:var(--destructive)} .chip.pur .n{color:var(--purple)}
+  .chip.active.warn .n,.chip.active.ok .n,.chip.active.bad .n,.chip.active.pur .n{color:var(--primary-fg)}
+
+  /* toolbar */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--muted-fg);font-size:13.5px}
+  .select{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--foreground);font-size:13.5px;font-family:inherit}
+  .viewtoggle{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .viewtoggle button{background:var(--card);border:0;color:var(--muted-fg);padding:9px 16px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+  .viewtoggle button.on{background:var(--primary);color:var(--primary-fg)}
+
+  /* ===== option A: rows ===== */
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 0 12px 14px;position:relative;overflow:hidden;transition:.15s}
+  .row:hover{border-color:hsl(217 91% 60% / .5)}
+  .row::before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px}
+  .row.st-pending::before{background:var(--warning)}
+  .row.st-accepted::before{background:var(--success)}
+  .row.st-rejected::before{background:var(--destructive)}
+  .row .av{width:44px;height:44px;border-radius:50%;background:var(--muted);flex-shrink:0;margin-inline-start:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--muted-fg)}
+  .row .info{flex:1;min-width:0}
+  .row .name{font-weight:800;font-size:15px}
+  .row .meta{color:var(--muted-fg);font-size:12.5px;display:flex;gap:14px;flex-wrap:wrap}
+  .row .meta b{color:var(--foreground);font-weight:700}
+  .badges{display:flex;gap:6px;align-items:center;flex-shrink:0}
+  .b{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+  .b-pending{color:var(--warning);border-color:hsl(38 92% 60% / .4);background:hsl(38 92% 60% / .1)}
+  .b-accepted{color:var(--success);border-color:hsl(142 76% 45% / .4);background:hsl(142 76% 45% / .1)}
+  .b-rejected{color:var(--destructive);border-color:hsl(0 84% 60% / .4);background:hsl(0 84% 60% / .1)}
+  .b-replied{color:var(--success);background:transparent;border:0;font-size:12px}
+  .b-nreply{color:var(--muted-fg);background:transparent;border:0;font-size:12px}
+  .b-int{color:var(--purple);border-color:hsl(262 83% 65% / .4);background:hsl(262 83% 65% / .12)}
+  .actions{display:flex;gap:6px;align-items:center;flex-shrink:0;padding-inline-end:14px}
+  .abtn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:.15s}
+  .abtn:hover{background:var(--muted)}
+  .abtn.wa:hover{border-color:var(--success)}
+  .dbtn{background:var(--primary);color:var(--primary-fg);border:0;border-radius:9px;padding:8px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
+
+  /* ===== option B: cards ===== */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;transition:.15s}
+  .card:hover{border-color:hsl(217 91% 60% / .5)}
+  .card::before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px}
+  .card.st-pending::before{background:var(--warning)}
+  .card.st-accepted::before{background:var(--success)}
+  .card.st-rejected::before{background:var(--destructive)}
+  .card .top{display:flex;align-items:center;gap:12px;padding:16px 18px 10px}
+  .card .av{width:48px;height:48px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted-fg)}
+  .card .name{font-weight:800;font-size:15.5px}
+  .card .sub2{font-size:12px;color:var(--muted-fg)}
+  .card .mid{padding:4px 18px 12px;display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--muted-fg)}
+  .card .mid b{color:var(--foreground);font-weight:700}
+  .card .salary{display:flex;gap:8px}
+  .scp{font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;background:hsl(142 76% 45% / .1);color:var(--success);border:1px solid hsl(142 76% 45% / .3)}
+  .scp.last{background:hsl(199 89% 60% / .1);color:var(--info);border-color:hsl(199 89% 60% / .3)}
+  .card .foot{display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding:10px 18px}
+  .card .foot .dbtn{flex:1}
+  @media(max-width:760px){.row{flex-wrap:wrap}.badges{order:3}.actions{margin-inline-start:auto}}
+
+  /* fidelity table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  th,td{border:1px solid var(--border);padding:8px 12px;text-align:right}
+  th{background:var(--muted);font-weight:800}
+  td code{background:var(--muted);padding:1px 7px;border-radius:6px;font-size:12px;direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="doc-banner">
+    <h1>📐 موكاب — صفحة طلبات الوظيفة (كتّاب المحتوى)</h1>
+    <p>وثيقة قرار — التصميم أدناه تفاعلي: جرّب تبديل العرض بين «صفوف» و«كروت» وقرر. بعد «ابروف» يُبنى في التطبيق مطابقاً 100%.</p>
+  </div>
+
+  <div class="decisions">
+    <div class="decision"><span class="num">1</span><div><b>شرائح فلترة بدل 6 كروت إحصائيات ضخمة</b><p>الأرقام نفسها تظهر داخل شرائح قابلة للضغط في سطر واحد — نوفّر ثلث ارتفاع الشاشة ونخلي الفلترة بديهية. <span class="rec">توصيتي: نعم</span></p></div></div>
+    <div class="decision"><span class="num">2</span><div><b>طريقة العرض: صفوف مدمجة أم كروت محسّنة؟</b><p>الصفوف أسرع للمسح مع 40+ طلباً (كل طلب سطر واحد)، والكروت أجمل بصرياً لكنها أطول. جرّب الاثنين تحت. <span class="rec">توصيتي: صفوف، مع إبقاء الكروت كخيار ثانٍ بزر تبديل حقيقي في الصفحة</span></p></div></div>
+    <div class="decision"><span class="num">3</span><div><b>تعريب كامل للصفحة</b><p>الصفحة الحالية تعرض إنجليزياً (Total · Pending · Back to All Applications) رغم أن اللوحة عربية — سببها خلل: قيمة اللغة ما توصل للصفحة أصلاً. نصلّحها ونعرّب كل شيء. <span class="rec">توصيتي: نعم — إلزامي</span></p></div></div>
+    <div class="decision"><span class="num">4</span><div><b>زر واتساب مباشر من كل صف/كرت</b><p>حالياً التواصل يتطلب فتح صفحة التفاصيل. نضيف زر واتساب فوري بجانب كل متقدم. <span class="rec">توصيتي: نعم</span></p></div></div>
+    <div class="decision"><span class="num">5</span><div><b>تواريخ نسبية بالعربي</b><p>بدل «July 5, 2026» تصير «قبل ٣ أيام» مع التاريخ الكامل عند مرور المؤشر. <span class="rec">توصيتي: نعم</span></p></div></div>
+    <div class="decision"><span class="num">6</span><div><b>حذف الحشو من البطاقة</b><p>اسم الوظيفة (مكرر — نحن داخل صفحتها)، سطر «تمت الموافقة على البيانات» (كل المتقدمين موافقون إلزامياً)، والإيميل الكامل — تنتقل كلها لصفحة التفاصيل فقط. <span class="rec">توصيتي: نعم</span></p></div></div>
+  </div>
+
+  <div class="divider">⬇ المعاينة التفاعلية — هذا شكل الصفحة بعد التحسين ⬇</div>
+
+  <div class="page">
+    <a class="backlink" href="#">→ العودة لجميع الطلبات</a>
+    <div class="pagehead">
+      <div class="ico">💼</div>
+      <div>
+        <h2>كتّاب المحتوى</h2>
+        <div class="sub">طلبات التوظيف المقدمة على هذه الوظيفة</div>
+      </div>
+    </div>
+
+    <div class="chips" id="chips">
+      <button class="chip" data-k="all">الكل <span class="n">37</span></button>
+      <button class="chip warn active" data-k="p">قيد المراجعة <span class="n">24</span></button>
+      <button class="chip" data-k="r">تمت المراجعة <span class="n">0</span></button>
+      <button class="chip ok" data-k="a">مقبول <span class="n">11</span></button>
+      <button class="chip bad" data-k="x">مرفوض <span class="n">2</span></button>
+      <button class="chip pur" data-k="i">🗓 لديهم مقابلة <span class="n">1</span></button>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">🔍 ابحث بجزء من الإيميل أو الجوال…</div>
+      <select class="select"><option>الأقدم أولاً</option><option>الأحدث أولاً</option></select>
+      <select class="select"><option>المقابلات: الكل</option><option>لديهم موعد</option><option>بدون موعد</option></select>
+      <div class="viewtoggle">
+        <button id="btnRows" class="on" onclick="setView('rows')">☰ صفوف</button>
+        <button id="btnCards" onclick="setView('cards')">▦ كروت</button>
+      </div>
+    </div>
+
+    <!-- ===== OPTION A: rows ===== -->
+    <div class="rows" id="viewRows">
+      <div class="row st-pending">
+        <div class="av">أم</div>
+        <div class="info">
+          <div class="name">أحمد محمود عبد الرحمن</div>
+          <div class="meta"><span>خبرة <b>4 سنوات</b></span><span>📍 القاهرة</span><span>💰 متوقع <b>9,000 ج.م</b></span><span>قدّم <b>قبل يومين</b></span></div>
+        </div>
+        <div class="badges"><span class="b b-pending">قيد المراجعة</span><span class="b b-replied">✓ تم الرد</span></div>
+        <div class="actions"><button class="abtn wa" title="واتساب">💬</button><button class="abtn" title="السيرة الذاتية">📄</button><button class="dbtn">التفاصيل</button></div>
+      </div>
+
+      <div class="row st-accepted">
+        <div class="av">سع</div>
+        <div class="info">
+          <div class="name">سارة عادل</div>
+          <div class="meta"><span>خبرة <b>6 سنوات</b></span><span>📍 الرياض</span><span>💰 متوقع <b>7,500 ﷼</b></span><span>قدّم <b>قبل 5 أيام</b></span></div>
+        </div>
+        <div class="badges"><span class="b b-accepted">مقبول</span><span class="b b-int">🗓 الأحد 3:00 عصراً</span></div>
+        <div class="actions"><button class="abtn wa" title="واتساب">💬</button><button class="abtn" title="السيرة الذاتية">📄</button><button class="dbtn">التفاصيل</button></div>
+      </div>
+
+      <div class="row st-pending">
+        <div class="av">مه</div>
+        <div class="info">
+          <div class="name">محمد هشام السيد</div>
+          <div class="meta"><span>خبرة <b>سنتان</b></span><span>📍 الإسكندرية</span><span>💰 متوقع <b>6,000 ج.م</b></span><span>قدّم <b>قبل أسبوع</b></span></div>
+        </div>
+        <div class="badges"><span class="b b-pending">قيد المراجعة</span><span class="b b-nreply">— لم يرد</span></div>
+        <div class="actions"><button class="abtn wa" title="واتساب">💬</button><button class="abtn" title="السيرة الذاتية">📄</button><button class="dbtn">التفاصيل</button></div>
+      </div>
+
+      <div class="row st-accepted">
+        <div class="av">نف</div>
+        <div class="info">
+          <div class="name">نورهان فتحي</div>
+          <div class="meta"><span>خبرة <b>3 سنوات</b></span><span>📍 جدة</span><span>💰 متوقع <b>6,800 ﷼</b></span><span>قدّم <b>قبل 9 أيام</b></span></div>
+        </div>
+        <div class="badges"><span class="b b-accepted">مقبول</span><span class="b b-replied">✓ تم الرد</span></div>
+        <div class="actions"><button class="abtn wa" title="واتساب">💬</button><button class="abtn" title="السيرة الذاتية">📄</button><button class="dbtn">التفاصيل</button></div>
+      </div>
+
+      <div class="row st-rejected">
+        <div class="av">خس</div>
+        <div class="info">
+          <div class="name">خالد سمير</div>
+          <div class="meta"><span>خبرة <b>أقل من سنة</b></span><span>📍 المنصورة</span><span>💰 متوقع <b>4,000 ج.م</b></span><span>قدّم <b>قبل أسبوعين</b></span></div>
+        </div>
+        <div class="badges"><span class="b b-rejected">مرفوض</span><span class="b b-nreply">— لم يرد</span></div>
+        <div class="actions"><button class="abtn wa" title="واتساب">💬</button><button class="abtn" title="السيرة الذاتية">📄</button><button class="dbtn">التفاصيل</button></div>
+      </div>
+    </div>
+
+    <!-- ===== OPTION B: cards ===== -->
+    <div class="cards" id="viewCards" style="display:none">
+      <div class="card st-pending">
+        <div class="top">
+          <div class="av">أم</div>
+          <div style="flex:1;min-width:0">
+            <div class="name">أحمد محمود عبد الرحمن</div>
+            <div class="sub2">قدّم قبل يومين · 📍 القاهرة</div>
+          </div>
+          <span class="b b-pending">قيد المراجعة</span>
+        </div>
+        <div class="mid">
+          <div>خبرة <b>4 سنوات</b> · العربية <b>ممتاز</b> · الإنجليزية <b>جيد</b> · <span style="color:var(--success)">✓ تم الرد</span></div>
+          <div class="salary"><span class="scp">متوقع 9,000 ج.م</span><span class="scp last">سابق 7,000 ج.م</span></div>
+        </div>
+        <div class="foot"><button class="abtn wa">💬</button><button class="abtn">📄</button><button class="dbtn">عرض التفاصيل</button></div>
+      </div>
+
+      <div class="card st-accepted">
+        <div class="top">
+          <div class="av">سع</div>
+          <div style="flex:1;min-width:0">
+            <div class="name">سارة عادل</div>
+            <div class="sub2">قدّم قبل 5 أيام · 📍 الرياض</div>
+          </div>
+          <span class="b b-accepted">مقبول</span>
+        </div>
+        <div class="mid">
+          <div>خبرة <b>6 سنوات</b> · العربية <b>ممتاز</b> · الإنجليزية <b>جيد جداً</b> · <span class="b b-int">🗓 الأحد 3:00</span></div>
+          <div class="salary"><span class="scp">متوقع 7,500 ﷼</span><span class="scp last">سابق 6,000 ﷼</span></div>
+        </div>
+        <div class="foot"><button class="abtn wa">💬</button><button class="abtn">📄</button><button class="dbtn">عرض التفاصيل</button></div>
+      </div>
+
+      <div class="card st-rejected">
+        <div class="top">
+          <div class="av">خس</div>
+          <div style="flex:1;min-width:0">
+            <div class="name">خالد سمير</div>
+            <div class="sub2">قدّم قبل أسبوعين · 📍 المنصورة</div>
+          </div>
+          <span class="b b-rejected">مرفوض</span>
+        </div>
+        <div class="mid">
+          <div>خبرة <b>أقل من سنة</b> · العربية <b>ممتاز</b> · الإنجليزية <b>مقبول</b> · <span style="color:var(--muted-fg)">— لم يرد</span></div>
+          <div class="salary"><span class="scp">متوقع 4,000 ج.م</span></div>
+        </div>
+        <div class="foot"><button class="abtn wa">💬</button><button class="abtn">📄</button><button class="dbtn">عرض التفاصيل</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider">مواصفات المطابقة (للتنفيذ بعد الابروف)</div>
+  <table>
+    <tr><th>عنصر الموكاب</th><th>في التطبيق الفعلي</th></tr>
+    <tr><td>شرائح الفلترة</td><td>روابط تحمل <code>?status=</code> نفس المنطق الحالي — ستايل <code>rounded-full</code> بألوان التوكنز <code>warning/success/destructive/chart-3</code></td></tr>
+    <tr><td>شريط الحالة الجانبي للصف/الكرت</td><td><code>border-inline-start 4px</code> حسب <code>status</code></td></tr>
+    <tr><td>الصف المدمج</td><td>مكوّن جديد <code>ApplicationRow.tsx</code> بجانب <code>ApplicationCard.tsx</code> (يبقى للعرض الشبكي)</td></tr>
+    <tr><td>زر التبديل صفوف/كروت</td><td>محفوظ في <code>localStorage</code> مثل طي القائمة الجانبية</td></tr>
+    <tr><td>زر واتساب</td><td><code>wa.me/&lt;phone&gt;</code> من رقم المتقدم مباشرة</td></tr>
+    <tr><td>التواريخ النسبية</td><td><code>Intl.RelativeTimeFormat('ar')</code> + التاريخ الكامل في <code>title</code></td></tr>
+    <tr><td>الأيقونات التعبيرية (💬📄)</td><td>أيقونات <code>lucide</code>: MessageCircle · FileText · إلخ — الإيموجي هنا للمعاينة فقط</td></tr>
+    <tr><td>الخط والألوان</td><td>نفس <code>Tajawal</code> ونفس توكنز الدارك الحالية — مطابقة أصلاً</td></tr>
+    <tr><td>التعريب</td><td>إزالة كل فروع <code>locale === 'ar'</code> في الصفحة والاعتماد على العربية مباشرة (اللوحة عربية فقط)</td></tr>
+  </table>
+
+  <p style="margin:26px 0;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--card);font-size:14px">
+    ✅ <b>للاعتماد:</b> قل «ابروف» + قراراتك على النقاط الست (أو «ابروف الكل حسب توصيتك»). أي تعديل على الموكاب — قل وش تغيّر وأحدّثه فوراً.
+  </p>
+</div>
+
+<script>
+  function setView(v){
+    document.getElementById('viewRows').style.display = v==='rows'?'flex':'none';
+    document.getElementById('viewCards').style.display = v==='cards'?'grid':'none';
+    document.getElementById('btnRows').classList.toggle('on',v==='rows');
+    document.getElementById('btnCards').classList.toggle('on',v==='cards');
+  }
+  document.querySelectorAll('#chips .chip').forEach(c=>c.addEventListener('click',()=>{
+    document.querySelectorAll('#chips .chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  }));
+</script>
+</body>
+</html>

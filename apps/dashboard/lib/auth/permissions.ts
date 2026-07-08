@@ -35,7 +35,6 @@ export async function hasRoutePermission(
       '/tasks/my-tasks',
       '/my-time',
       '/notes',
-      '/organizational-structure',
     ];
 
     // Check exact match for default routes

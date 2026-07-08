@@ -63,9 +63,13 @@ const COUNTRY_AR: Record<string, string> = {
   PS: 'فلسطين',
 };
 
-function formatVisitMessage(headline: string, payload: TelegramVisitPayload): string {
+export async function sendTelegramVisitNotification(
+  payload: TelegramVisitPayload,
+): Promise<void> {
   const now = new Date();
-  const date = now.toLocaleDateString('en-GB', { timeZone: 'Asia/Riyadh' });
+  const date = now.toLocaleDateString('en-GB', {
+    timeZone: 'Asia/Riyadh',
+  });
   const time = now.toLocaleTimeString('en-GB', {
     timeZone: 'Asia/Riyadh',
     hour: '2-digit',
@@ -75,24 +79,14 @@ function formatVisitMessage(headline: string, payload: TelegramVisitPayload): st
   const countryCode = payload.country?.toUpperCase() ?? '';
   const country = COUNTRY_AR[countryCode] || countryCode || 'غير معروف';
 
-  return [
-    headline,
+  const text = [
+    '🌐 <b>زائر تحوّل لمدونتي</b>',
     '',
     `📅 ${escapeHtml(date)} · ⏰ ${escapeHtml(time)} (Riyadh)`,
     `📍 ${escapeHtml(city)}، ${escapeHtml(country)}`,
   ].join('\n');
-}
 
-export async function sendTelegramVisitNotification(
-  payload: TelegramVisitPayload,
-): Promise<void> {
-  await postToTelegram(formatVisitMessage('🌐 <b>زائر تحوّل لمدونتي</b>', payload));
-}
-
-export async function sendTelegramCareersPageVisit(
-  payload: TelegramVisitPayload,
-): Promise<void> {
-  await postToTelegram(formatVisitMessage('👥 <b>زائر دخل صفحة الوظائف</b>', payload));
+  await postToTelegram(text);
 }
 
 // ─────────────────────────────────────────────────────────────

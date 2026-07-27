@@ -355,27 +355,6 @@ enum CategoryType {
   REVENUE
 }
 
-model SourceOfIncome {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  name        String
-  type        SourceOfIncomeType
-  amount      Float
-  description String?
-  date        DateTime
-
-  @@index([type])
-  @@index([date])
-}
-
-enum SourceOfIncomeType {
-  SUBSCRIPTION
-  ONE_TIME
-  RECURRING
-}
-
 model Task {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())

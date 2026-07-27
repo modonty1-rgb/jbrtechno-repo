@@ -26,7 +26,6 @@ export const OPERATIONAL_ROUTES: AdminRoute[] = [
   { route: '/contact-messages', label: 'رسائل التواصل' },
   { route: '/accounting', label: 'المحاسبة' },
   { route: '/categories', label: 'شجرة الحسابات' },
-  { route: '/source-of-income', label: 'مصادر الدخل' },
   { route: '/tasks', label: 'المهام' },
   { route: '/tasks/my-tasks', label: 'مهامي' },
   { route: '/my-time', label: 'سجل الوقت' },

@@ -11,7 +11,6 @@ import {
   Users,
   Calculator,
   ListTodo,
-  TrendingUp,
   Clock,
   StickyNote,
   FileSignature,
@@ -45,7 +44,6 @@ const routeIcons: Record<string, React.ElementType> = {
   '/staff/offboard': UserMinus,
   '/accounting': Calculator,
   '/categories': ListTodo,
-  '/source-of-income': TrendingUp,
   '/tasks': ListTodo,
   '/tasks/my-tasks': ListTodo,
   '/my-time': Clock,
@@ -68,7 +66,6 @@ const routeLabels: Record<string, string> = {
   '/staff/offboard': 'إنهاء الخدمات',
   '/accounting': messages.admin.accounting,
   '/categories': 'شجرة الحسابات',
-  '/source-of-income': messages.admin.sourceOfIncome,
   '/tasks': messages.admin.tasks,
   '/tasks/my-tasks': 'مهامي',
   '/my-time': 'سجل الوقت',
@@ -84,7 +81,7 @@ const routeLabels: Record<string, string> = {
 // work → clients → money → insights → configuration.
 // Contact messages live as a TopNavbar button, not a sidebar section.
 const routeGroups: Record<string, string[]> = {
-  'financial-management': ['/accounting', '/categories', '/source-of-income', '/contracts'],
+  'financial-management': ['/accounting', '/categories', '/contracts'],
   'staff-affairs': ['/staff', '/payroll', '/adjustments', '/staff/offboard'],
   'recruitment': ['/positions', '/applications', '/applications/interviews'],
   'administration': ['/settings', '/clockify-users', '/users'],

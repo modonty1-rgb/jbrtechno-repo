@@ -342,7 +342,6 @@ model Category {
   type     CategoryType
   order    Int          @default(0)
 
-  costs        Cost[]
   children     Category[]    @relation("CategoryChildren")
   parent       Category?     @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   transactions Transaction[] @relation("TransactionCategory")
@@ -354,29 +353,6 @@ model Category {
 enum CategoryType {
   EXPENSE
   REVENUE
-}
-
-model Cost {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  name        String
-  amount      Float
-  type        CostType
-  categoryId  String?   @db.ObjectId
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  description String?
-  date        DateTime
-
-  @@index([type])
-  @@index([categoryId])
-  @@index([date])
-}
-
-enum CostType {
-  FIXED
-  VARIABLE
 }
 
 model SourceOfIncome {

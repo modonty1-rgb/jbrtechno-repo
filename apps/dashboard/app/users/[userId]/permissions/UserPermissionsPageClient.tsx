@@ -48,7 +48,7 @@ const routeCategories = [
   {
     id: 'financial',
     label: 'financial',
-    routes: ['/accounting', '/categories', '/costs', '/source-of-income'],
+    routes: ['/accounting', '/categories', '/source-of-income'],
   },
   {
     id: 'management',

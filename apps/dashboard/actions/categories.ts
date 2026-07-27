@@ -261,8 +261,6 @@ export async function createCategory(data: {
 
     revalidatePath('/ar/admin/categories');
     revalidatePath('/en/admin/categories');
-    revalidatePath('/ar/admin/costs');
-    revalidatePath('/en/admin/costs');
 
     return {
       success: true,
@@ -338,8 +336,6 @@ export async function updateCategory(
 
     revalidatePath('/ar/admin/categories');
     revalidatePath('/en/admin/categories');
-    revalidatePath('/ar/admin/costs');
-    revalidatePath('/en/admin/costs');
 
     return {
       success: true,
@@ -395,21 +391,10 @@ export async function deleteCategory(id: string): Promise<DeleteCategoryResult> 
       };
     }
 
-    // Check if category is used in costs
-    const costsCount = await prisma.cost.count({ where: { categoryId: id } });
-    if (costsCount > 0) {
-      return {
-        success: false,
-        error: 'Cannot delete category that is used in costs',
-      };
-    }
-
     await rawDeleteCategoryById(id);
 
     revalidatePath('/ar/admin/categories');
     revalidatePath('/en/admin/categories');
-    revalidatePath('/ar/admin/costs');
-    revalidatePath('/en/admin/costs');
 
     return {
       success: true,
@@ -425,7 +410,6 @@ export async function deleteCategory(id: string): Promise<DeleteCategoryResult> 
 
 export interface CategoryUsageCounts {
   transactions: number;
-  costs: number;
 }
 
 export async function getCategoryLabelMap(): Promise<Record<string, string>> {
@@ -445,15 +429,8 @@ export async function getActiveCategoryTreeByType(type: CategoryType): Promise<G
 }
 
 export async function getCategoryUsageCounts(id: string): Promise<CategoryUsageCounts> {
-  const [transactions, costs] = await Promise.all([
-    prisma.transaction.count({ where: { categoryId: id } }),
-    prisma.cost.count({ where: { categoryId: id } }),
-  ]);
-
-  return {
-    transactions,
-    costs,
-  };
+  const transactions = await prisma.transaction.count({ where: { categoryId: id } });
+  return { transactions };
 }
 
 export async function validateCategoryId(params: {

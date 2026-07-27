@@ -35,7 +35,6 @@ interface CategoryNode extends CategoryItem {
 
 interface CategoryUsage {
   transactions: number;
-  costs: number;
 }
 
 interface CategoryTreeProps {
@@ -204,7 +203,7 @@ export function CategoryTree({ locale, initialCategories }: CategoryTreeProps) {
   };
 
   const hasChildren = (id: string) => categories.some((c) => c.parentId === id);
-  const usage = (id: string) => usageById[id] || { transactions: 0, costs: 0 };
+  const usage = (id: string) => usageById[id] || { transactions: 0 };
 
   const confirmDelete = async () => {
     if (!deleteId) return;
@@ -246,7 +245,7 @@ export function CategoryTree({ locale, initialCategories }: CategoryTreeProps) {
         {tree.map((main) => {
           const mainUsage = usage(main.id);
           const mainHasChildren = hasChildren(main.id);
-          const disableDelete = mainHasChildren || mainUsage.transactions > 0 || mainUsage.costs > 0;
+          const disableDelete = mainHasChildren || mainUsage.transactions > 0;
           const hasChildrenToShow = main.children.length > 0;
 
           return (
@@ -279,8 +278,8 @@ export function CategoryTree({ locale, initialCategories }: CategoryTreeProps) {
 
                       <div className="text-xs text-muted-foreground">
                         {isArabic
-                          ? `المعاملات: ${mainUsage.transactions} • التكاليف: ${mainUsage.costs}`
-                          : `Transactions: ${mainUsage.transactions} • Costs: ${mainUsage.costs}`}
+                          ? `المعاملات: ${mainUsage.transactions}`
+                          : `Transactions: ${mainUsage.transactions}`}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -313,8 +312,7 @@ export function CategoryTree({ locale, initialCategories }: CategoryTreeProps) {
                         {main.children.map((child) => {
                           const childUsage = usage(child.id);
                           const childHasChildren = hasChildren(child.id);
-                          const childDisableDelete =
-                            childHasChildren || childUsage.transactions > 0 || childUsage.costs > 0;
+                          const childDisableDelete = childHasChildren || childUsage.transactions > 0;
 
                           return (
                             <div
@@ -328,8 +326,8 @@ export function CategoryTree({ locale, initialCategories }: CategoryTreeProps) {
                                 </div>
                                 <div className="text-xs text-muted-foreground">
                                   {isArabic
-                                    ? `المعاملات: ${childUsage.transactions} • التكاليف: ${childUsage.costs}`
-                                    : `Transactions: ${childUsage.transactions} • Costs: ${childUsage.costs}`}
+                                    ? `المعاملات: ${childUsage.transactions}`
+                                    : `Transactions: ${childUsage.transactions}`}
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">

@@ -29,6 +29,27 @@ export interface EmergencyContact {
 
 export interface Staff {
   id: string;
+  // Direct-registration identity fields (staff created from /staff/new)
+  fullName: string | null;
+  phone: string | null;
+  personalEmail: string | null;
+  nationalId: string | null;
+  nationality: string | null;
+  birthDate: Date | null;
+  country: string | null;
+  city: string | null;
+  address: string | null;
+  jobDuties: string | null;
+  bankName: string | null;
+  iban: string | null;
+  instapay: string | null;
+  vodafoneCash: string | null;
+  photoUrl: string | null;
+  idCardUrl: string | null;
+  cvUrl: string | null;
+  offerAcceptedDate: Date | null;
+  terminationDate: Date | null;
+  terminationReason: string | null;
   // HR fields
   employeeId: string | null;
   department: string | null;
@@ -43,6 +64,7 @@ export interface Staff {
   trialEndDate: Date | null;
   trialMonths: number | null;
   trialSalary: number | null;
+  salaryMode: 'AGREED' | 'EVALUATION' | null;
   ndaSignedDate: Date | null;
   contractSignedDate: Date | null;
   currency: string;
@@ -92,6 +114,26 @@ export async function getAllStaff(): Promise<GetAllStaffResult> {
     // Transform to Staff interface
     const staff: Staff[] = staffRecords.map((s) => ({
       id: s.id,
+      fullName: s.fullName,
+      phone: s.phone,
+      personalEmail: s.personalEmail,
+      nationalId: s.nationalId,
+      nationality: s.nationality,
+      birthDate: s.birthDate,
+      country: s.country,
+      city: s.city,
+      address: s.address,
+      jobDuties: s.jobDuties,
+      bankName: s.bankName,
+      iban: s.iban,
+      instapay: s.instapay,
+      vodafoneCash: s.vodafoneCash,
+      photoUrl: s.photoUrl,
+      idCardUrl: s.idCardUrl,
+      cvUrl: s.cvUrl,
+      offerAcceptedDate: s.offerAcceptedDate,
+      terminationDate: s.terminationDate,
+      terminationReason: s.terminationReason,
       employeeId: s.employeeId,
       department: s.department,
       hireDate: s.hireDate,
@@ -104,6 +146,7 @@ export async function getAllStaff(): Promise<GetAllStaffResult> {
       trialEndDate: s.trialEndDate,
       trialMonths: s.trialMonths,
       trialSalary: s.trialSalary,
+      salaryMode: s.salaryMode,
       ndaSignedDate: s.ndaSignedDate,
       contractSignedDate: s.contractSignedDate,
       currency: s.currency || 'SAR',
@@ -184,6 +227,26 @@ export async function getStaffById(id: string): Promise<GetStaffByIdResult> {
     // Transform to Staff interface
     const staff: Staff = {
       id: staffRecord.id,
+      fullName: staffRecord.fullName,
+      phone: staffRecord.phone,
+      personalEmail: staffRecord.personalEmail,
+      nationalId: staffRecord.nationalId,
+      nationality: staffRecord.nationality,
+      birthDate: staffRecord.birthDate,
+      country: staffRecord.country,
+      city: staffRecord.city,
+      address: staffRecord.address,
+      jobDuties: staffRecord.jobDuties,
+      bankName: staffRecord.bankName,
+      iban: staffRecord.iban,
+      instapay: staffRecord.instapay,
+      vodafoneCash: staffRecord.vodafoneCash,
+      photoUrl: staffRecord.photoUrl,
+      idCardUrl: staffRecord.idCardUrl,
+      cvUrl: staffRecord.cvUrl,
+      offerAcceptedDate: staffRecord.offerAcceptedDate,
+      terminationDate: staffRecord.terminationDate,
+      terminationReason: staffRecord.terminationReason,
       employeeId: staffRecord.employeeId,
       department: staffRecord.department,
       hireDate: staffRecord.hireDate,
@@ -196,6 +259,7 @@ export async function getStaffById(id: string): Promise<GetStaffByIdResult> {
       trialEndDate: staffRecord.trialEndDate,
       trialMonths: staffRecord.trialMonths,
       trialSalary: staffRecord.trialSalary,
+      salaryMode: staffRecord.salaryMode,
       ndaSignedDate: staffRecord.ndaSignedDate,
       contractSignedDate: staffRecord.contractSignedDate,
       currency: staffRecord.currency || 'SAR',

@@ -28,7 +28,6 @@ export async function getAllUsers() {
         role: true,
         isActive: true,
         lastLogin: true,
-        password: true,
         createdAt: true,
         updatedAt: true,
         staff: {
@@ -332,13 +331,14 @@ export async function updateUserProfile(data: {
     }
 
     // Update staff/application profile image if user has Staff relation
+    const staffApplication = user.staff[0]?.application;
     if (data.profileImageUrl !== undefined && data.profileImagePublicId !== undefined) {
-      if (user.staff?.application) {
+      if (staffApplication) {
         // Delete old image from Cloudinary if exists
-        if (user.staff.application.profileImagePublicId) {
+        if (staffApplication.profileImagePublicId) {
           try {
             const { deleteImageFromCloudinary } = await import('@/lib/cloudinary');
-            await deleteImageFromCloudinary(user.staff.application.profileImagePublicId);
+            await deleteImageFromCloudinary(staffApplication.profileImagePublicId);
           } catch (error) {
             console.error('Error deleting old image from Cloudinary:', error);
             // Continue even if deletion fails
@@ -347,7 +347,7 @@ export async function updateUserProfile(data: {
 
         // Update Application with new image
         await prisma.application.update({
-          where: { id: user.staff.application.id },
+          where: { id: staffApplication.id },
           data: {
             profileImageUrl: data.profileImageUrl,
             profileImagePublicId: data.profileImagePublicId,

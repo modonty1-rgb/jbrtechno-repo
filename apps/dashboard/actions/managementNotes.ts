@@ -54,7 +54,7 @@ export async function getManagementNotes(
 
     // Get staff department if applicable
     const staffDepartment = session.user.role === UserRole.STAFF
-      ? (await prisma.staff.findUnique({ where: { userId }, select: { department: true } }))?.department
+      ? (await prisma.staff.findFirst({ where: { userId }, select: { department: true } }))?.department
       : undefined;
 
     // Build audience conditions

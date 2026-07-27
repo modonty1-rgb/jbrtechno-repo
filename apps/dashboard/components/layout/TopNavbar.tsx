@@ -14,9 +14,10 @@ import { SidebarToggleButton } from '@/components/layout/SidebarToggle';
 interface TopNavbarProps {
   locale: string;
   userAvatarUrl?: string | null;
+  contactMessageCount?: number;
 }
 
-export function TopNavbar({ locale, userAvatarUrl }: TopNavbarProps) {
+export function TopNavbar({ locale, userAvatarUrl, contactMessageCount = 0 }: TopNavbarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const user = session?.user;
@@ -36,18 +37,24 @@ export function TopNavbar({ locale, userAvatarUrl }: TopNavbarProps) {
         const isActive = exact
           ? pathname === href || pathname === '/'
           : pathname?.startsWith(href);
+        const badge = route === '/contact-messages' && contactMessageCount > 0;
         return (
           <Link
             key={route}
             href={href}
             className={cn(
-              'flex items-center justify-center w-9 h-9 rounded-lg transition-colors',
+              'relative flex items-center justify-center w-9 h-9 rounded-lg transition-colors',
               'hover:bg-accent hover:text-accent-foreground',
               isActive && 'bg-accent text-accent-foreground'
             )}
             title={title}
           >
             <Icon className="h-5 w-5" />
+            {badge && (
+              <span className="absolute -top-1 -end-1 min-w-4 h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {contactMessageCount}
+              </span>
+            )}
           </Link>
         );
       })}

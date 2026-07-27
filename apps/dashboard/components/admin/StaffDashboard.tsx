@@ -36,7 +36,7 @@ export async function StaffDashboard({
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
   // Find staff record for this user (for Clockify summary)
-  const staff = await prisma.staff.findUnique({
+  const staff = await prisma.staff.findFirst({
     where: { userId },
     select: { id: true },
   });

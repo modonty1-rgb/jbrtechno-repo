@@ -1,9 +1,10 @@
 import { buildLocalizedPath } from '@/lib/auth/utils';
 import { messages } from '@/helpers/messages';
 import {
+  ArrowUpDown,
+  UserMinus,
+  Wallet,
   LayoutDashboard,
-  Network,
-  Mail,
   Briefcase,
   BriefcaseBusiness,
   CalendarClock,
@@ -15,8 +16,6 @@ import {
   Clock,
   StickyNote,
   FileSignature,
-  CreditCard,
-  BarChart3,
   Settings,
   UserCog,
   User,
@@ -38,11 +37,13 @@ export interface SidebarSection {
 
 const routeIcons: Record<string, React.ElementType> = {
   '/': LayoutDashboard,
-  '/contact-messages': Mail,
   '/positions': BriefcaseBusiness,
   '/applications': Briefcase,
   '/applications/interviews': CalendarClock,
   '/staff': Users,
+  '/adjustments': ArrowUpDown,
+  '/payroll': Wallet,
+  '/staff/offboard': UserMinus,
   '/accounting': Calculator,
   '/categories': ListTodo,
   '/costs': DollarSign,
@@ -52,9 +53,6 @@ const routeIcons: Record<string, React.ElementType> = {
   '/my-time': Clock,
   '/notes': StickyNote,
   '/contracts': FileSignature,
-  '/customers': Users,
-  '/subscriptions': CreditCard,
-  '/reports': BarChart3,
   '/settings': Settings,
   '/settings/profile': User,
   '/users': Users,
@@ -63,11 +61,13 @@ const routeIcons: Record<string, React.ElementType> = {
 
 const routeLabels: Record<string, string> = {
   '/': messages.admin.dashboard,
-  '/contact-messages': messages.admin.contactMessages,
   '/positions': 'الوظائف الشاغرة',
   '/applications': messages.admin.applications,
   '/applications/interviews': 'المقابلات',
   '/staff': messages.admin.staffManagement,
+  '/adjustments': 'الخصومات والحوافز',
+  '/payroll': 'مسير الرواتب',
+  '/staff/offboard': 'إنهاء الخدمات',
   '/accounting': messages.admin.accounting,
   '/categories': 'شجرة الحسابات',
   '/costs': messages.admin.costs,
@@ -77,39 +77,33 @@ const routeLabels: Record<string, string> = {
   '/my-time': 'سجل الوقت',
   '/notes': messages.admin.administrativeNotes,
   '/contracts': messages.admin.contracts,
-  '/customers': messages.admin.customers,
-  '/subscriptions': messages.admin.subscriptions,
-  '/reports': messages.admin.reports,
   '/settings': messages.admin.settings,
   '/settings/profile': 'الملف الشخصي',
   '/users': messages.admin.users,
   '/clockify-users': 'مستخدمو Clockify',
 };
 
+// Section order = business flow: build the team → manage the team → run the
+// work → clients → money → insights → configuration.
+// Contact messages live as a TopNavbar button, not a sidebar section.
 const routeGroups: Record<string, string[]> = {
-  'core-operations': ['/contact-messages'],
-  'hiring-recruitment': ['/positions', '/applications', '/applications/interviews', '/staff'],
-  'financial-management': ['/accounting', '/categories', '/costs', '/source-of-income'],
-  'operations-management': ['/tasks', '/contracts'],
-  'business-development': ['/customers', '/subscriptions'],
-  'reporting-analysis': ['/reports'],
+  'financial-management': ['/accounting', '/categories', '/costs', '/source-of-income', '/contracts'],
+  'staff-affairs': ['/staff', '/payroll', '/adjustments', '/staff/offboard'],
+  'recruitment': ['/positions', '/applications', '/applications/interviews'],
   'administration': ['/settings', '/clockify-users', '/users'],
 };
 
 const sectionLabels: Record<string, string> = {
-  'core-operations': 'الإدارة',
-  'hiring-recruitment': 'شئون الموظفين والتوظيف',
+  'recruitment': 'التوظيف',
+  'staff-affairs': 'شؤون الموظفين',
   'financial-management': 'الإدارة المالية',
-  'operations-management': 'إدارة العمليات',
-  'business-development': 'تطوير الأعمال',
-  'reporting-analysis': 'التقارير والتحليل',
   'administration': 'الإعدادات والمستخدمون',
 };
 
 export function getSidebarSections(
   accessibleRoutes: string[],
   locale: string,
-  counts: { totalApplications?: number; contactMessages?: number },
+  counts: { totalApplications?: number },
   userRole?: string
 ): SidebarSection[] {
   const accessibleRoutesSet = new Set(accessibleRoutes);
@@ -136,9 +130,6 @@ export function getSidebarSections(
 
         if (route === '/applications' && counts.totalApplications) {
           item.count = counts.totalApplications;
-        }
-        if (route === '/contact-messages' && counts.contactMessages) {
-          item.count = counts.contactMessages;
         }
 
         return item;

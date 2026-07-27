@@ -1,6 +1,6 @@
 {
   "name": "dashboard",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "private": true,
   "prisma": {
     "schema": "../../packages/database/prisma/schema.prisma"

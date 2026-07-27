@@ -63,7 +63,7 @@ model Application {
   locale String @default("ar")
 
   // Relations
-  staff Staff?
+  staff Staff[]
 
   @@index([status])
   @@index([position])
@@ -180,7 +180,7 @@ model Staff {
   employeeId String?
   department String?
   hireDate   DateTime
-  salary     Float?
+  salary     Float? // post-trial salary (when salaryMode is AGREED)
   status     StaffStatus
   notes      String?
 
@@ -196,12 +196,49 @@ model Staff {
   emergencyContact1  Json?
   emergencyContact2  Json?
 
+  // Identity & contact (from the staff registration form)
+  fullName      String?
+  nationalId    String?
+  nationality   String?
+  birthDate     DateTime?
+  phone         String?
+  personalEmail String?
+  country       String?
+  city          String?
+  address       String?
+  jobDuties     String?
+
+  // Payout details — bank, plus Egypt-only fallbacks
+  bankName     String?
+  iban         String?
+  instapay     String?
+  vodafoneCash String?
+
+  salaryMode        SalaryMode?
+  offerAcceptedDate DateTime?
+
+  // Documents (Cloudinary)
+  photoUrl       String?
+  photoPublicId  String?
+  idCardUrl      String?
+  idCardPublicId String?
+  cvUrl          String?
+  cvPublicId     String?
+
+  // Offboarding (termination only — no suspension flow)
+  terminationDate   DateTime?
+  terminationReason String?
+  clearance         Json? // {finalPay, assets, access, release}
+
   clockifyUserId String?
 
-  applicationId String?      @unique @db.ObjectId
-  application   Application? @relation(fields: [applicationId], references: [id])
-  userId        String?      @unique @db.ObjectId
-  user          User?        @relation(fields: [userId], references: [id])
+  // Optional links (one-to-many on the other side: MongoDB unique indexes
+  // reject multiple nulls, so a unique FK would block direct-registered staff)
+  applicationId String?           @db.ObjectId
+  application   Application?      @relation(fields: [applicationId], references: [id])
+  userId        String?           @db.ObjectId
+  user          User?             @relation(fields: [userId], references: [id])
+  adjustments   StaffAdjustment[]
 
   @@index([status])
   @@index([department])
@@ -213,6 +250,48 @@ enum StaffStatus {
   ACTIVE
   INACTIVE
   ON_LEAVE
+}
+
+enum SalaryMode {
+  AGREED
+  EVALUATION
+}
+
+// A payroll-month movement: bonus or deduction, entered as a fixed amount or
+// as N days of salary (priced into `amount` at entry time).
+model StaffAdjustment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  staffId String @db.ObjectId
+  staff   Staff  @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  type   AdjustmentType
+  amount Float // final money value in the employee's currency
+  days   Float? // set when the movement was entered as days of salary
+  month  String // payroll month, YYYY-MM
+  note   String?
+
+  @@index([staffId])
+  @@index([month])
+}
+
+enum AdjustmentType {
+  BONUS
+  DEDUCTION
+}
+
+// Frozen month-close snapshot: payroll is a financial record, so closing a
+// month stores the computed rows as-is — later edits never rewrite history.
+model PayrollRun {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+
+  month    String  @unique // YYYY-MM
+  closedBy String?
+  rows     Json // [{staffId, name, currency, base, bonuses, deductions, net}]
+  totals   Json // per-currency totals
 }
 
 model User {
@@ -229,7 +308,7 @@ model User {
   avatarUrl      String?
   avatarPublicId String?
 
-  staff       Staff?
+  staff       Staff[]
   permissions UserRoutePermission[]
 
   @@index([role])

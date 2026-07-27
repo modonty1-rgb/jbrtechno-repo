@@ -13,32 +13,43 @@ export const DEFAULT_ROUTES: string[] = [
 ];
 
 // Operational routes - Can be assigned to STAFF users by SUPER_ADMIN
+// (labels are shown as-is in the permissions UI)
 export const OPERATIONAL_ROUTES: AdminRoute[] = [
-  { route: '/', label: 'dashboard' },
-  { route: '/positions', label: 'positions' },
-  { route: '/applications', label: 'applications' },
-  { route: '/applications/interviews', label: 'interviews' },
-  { route: '/staff', label: 'staffManagement' },
-  { route: '/contact-messages', label: 'contactMessages' },
-  { route: '/accounting', label: 'accounting' },
-  { route: '/categories', label: 'categories' },
-  { route: '/costs', label: 'costs' },
-  { route: '/source-of-income', label: 'sourceOfIncome' },
-  { route: '/subscriptions', label: 'subscriptions' },
-  { route: '/customers', label: 'customers' },
-  { route: '/tasks', label: 'tasks' },
-  { route: '/tasks/my-tasks', label: 'myTasks' },
-  { route: '/my-time', label: 'myTime' },
-  { route: '/notes', label: 'administrativeNotes' },
-  { route: '/contracts', label: 'contracts' },
-  { route: '/reports', label: 'reports' },
-  { route: '/settings', label: 'settings' },
-  { route: '/users', label: 'users' },
-  { route: '/clockify-users', label: 'users' },
+  { route: '/', label: 'لوحة التحكم' },
+  { route: '/positions', label: 'الوظائف الشاغرة' },
+  { route: '/applications', label: 'طلبات التوظيف' },
+  { route: '/applications/interviews', label: 'المقابلات' },
+  { route: '/staff', label: 'إدارة الموظفين' },
+  { route: '/adjustments', label: 'الخصومات والحوافز' },
+  { route: '/payroll', label: 'مسير الرواتب' },
+  { route: '/staff/offboard', label: 'إنهاء الخدمات' },
+  { route: '/contact-messages', label: 'رسائل التواصل' },
+  { route: '/accounting', label: 'المحاسبة' },
+  { route: '/categories', label: 'شجرة الحسابات' },
+  { route: '/costs', label: 'التكاليف' },
+  { route: '/source-of-income', label: 'مصادر الدخل' },
+  { route: '/tasks', label: 'المهام' },
+  { route: '/tasks/my-tasks', label: 'مهامي' },
+  { route: '/my-time', label: 'سجل الوقت' },
+  { route: '/notes', label: 'الملاحظات الإدارية' },
+  { route: '/contracts', label: 'العقود والاتفاقيات' },
+  { route: '/settings', label: 'الإعدادات' },
+  { route: '/users', label: 'المستخدمون' },
+  { route: '/clockify-users', label: 'مستخدمو Clockify' },
 ];
 
 // Planning routes - Removed (pages deleted in Phase 2)
 export const PLANNING_ROUTES: AdminRoute[] = [];
+
+// HR data (salaries, bank details, offboarding) is SUPER_ADMIN-only:
+// the HR server actions require that role, so granting these routes to STAFF
+// would only produce broken pages. Kept out of the assignable list.
+export const SUPER_ADMIN_ONLY_ROUTES: string[] = [
+  '/staff',
+  '/payroll',
+  '/adjustments',
+  '/staff/offboard',
+];
 
 // All routes (for SUPER_ADMIN access) - only operational routes now
 export const ALL_ADMIN_ROUTES: AdminRoute[] = OPERATIONAL_ROUTES;
@@ -46,7 +57,7 @@ export const ALL_ADMIN_ROUTES: AdminRoute[] = OPERATIONAL_ROUTES;
 // Routes that can be assigned to STAFF users (operational routes only)
 // Exclude default routes since they're accessible to all authenticated users
 export const ASSIGNABLE_ROUTES = OPERATIONAL_ROUTES.filter(
-  (route) => !DEFAULT_ROUTES.includes(route.route)
+  (route) => !DEFAULT_ROUTES.includes(route.route) && !SUPER_ADMIN_ONLY_ROUTES.includes(route.route)
 );
 
 // Backward compatibility - export ADMIN_ROUTES as ALL_ADMIN_ROUTES

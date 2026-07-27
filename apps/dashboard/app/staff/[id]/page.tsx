@@ -10,7 +10,7 @@ export default async function StaffDetailPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const session = await auth();
-  const { locale, id } = await params;
+  const { id } = await params;
 
   // Only SUPER_ADMIN can access this page
   if (
@@ -26,16 +26,7 @@ export default async function StaffDetailPage({
     notFound();
   }
 
-  // Check if application relation exists, show warning if missing
-  const hasApplication = !!result.staff.application;
-
-  return (
-    <StaffDetailClient
-      staff={result.staff}
-      locale={locale}
-      hasApplication={hasApplication}
-    />
-  );
+  return <StaffDetailClient staff={result.staff} />;
 }
 
 

@@ -68,6 +68,44 @@ export async function uploadImageToCloudinary(fileBuffer: Buffer, fileName: stri
   });
 }
 
+// Staff-file uploads (registration form): photo / ID card / CV
+export async function uploadStaffImage(fileBuffer: Buffer, fileName: string, kind: 'photo' | 'id-card'): Promise<UploadResult> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: `jbrtechno/staff/${kind}`,
+        resource_type: 'image',
+        public_id: `${kind}_${Date.now()}_${fileName.replace(/\.[^/.]+$/, '')}`,
+        transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else if (result) resolve({ url: result.secure_url, publicId: result.public_id });
+        else reject(new Error('Upload failed: No result returned'));
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+}
+
+export async function uploadStaffDoc(fileBuffer: Buffer, fileName: string): Promise<UploadResult> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'jbrtechno/staff/cv',
+        resource_type: 'raw',
+        public_id: `cv_${Date.now()}_${fileName.replace(/\.[^/.]+$/, '')}`,
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else if (result) resolve({ url: result.secure_url, publicId: result.public_id });
+        else reject(new Error('Upload failed: No result returned'));
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+}
+
 export async function deleteCVFromCloudinary(publicId: string): Promise<void> {
   try {
     await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });

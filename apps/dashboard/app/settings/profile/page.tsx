@@ -72,7 +72,7 @@ export default async function ProfileSettingsPage({
 
 
 
-  const staff = await prisma.staff.findUnique({
+  const staff = await prisma.staff.findFirst({
 
     where: { userId },
 

@@ -10,27 +10,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@jbrtechno/ui';
-import { Button } from '@jbrtechno/ui';
-import {
+  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@jbrtechno/ui';
-import { Input } from '@jbrtechno/ui';
-import { Label } from '@jbrtechno/ui';
-import {
+  Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@jbrtechno/ui';
-import { Badge } from '@jbrtechno/ui';
-import {
+  Badge,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -39,12 +37,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  Alert,
+  AlertDescription,
 } from '@jbrtechno/ui';
-import { Alert, AlertDescription } from '@jbrtechno/ui';
-import { Plus, Edit, Trash2, Key, Loader2, Shield } from 'lucide-react';
+import { Plus, Pencil, Trash2, Key, Loader2, Shield, UserCog } from 'lucide-react';
 import { createUser, updateUser, deleteUser, resetPassword, updateUserClockifyId } from '@/actions/users';
+
 function formatDateTime(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('ar-SA-u-nu-latn-ca-gregory', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -53,6 +53,11 @@ function formatDateTime(date: Date): string {
   }).format(new Date(date));
 }
 
+const ROLE_LABELS: Record<UserRole, string> = {
+  SUPER_ADMIN: 'مدير عام',
+  STAFF: 'موظف',
+};
+
 interface User {
   id: string;
   email: string;
@@ -60,13 +65,12 @@ interface User {
   role: UserRole;
   isActive: boolean;
   lastLogin: Date | null;
-  password: string;
   createdAt: Date;
   updatedAt: Date;
   staff?: {
     id: string;
     clockifyUserId: string | null;
-  } | null;
+  }[];
 }
 
 interface UsersPageClientProps {
@@ -75,7 +79,7 @@ interface UsersPageClientProps {
   currentUserId: string;
 }
 
-export function UsersPageClient({ users, locale, currentUserId }: UsersPageClientProps) {
+export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) {
   const router = useRouter();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -86,49 +90,33 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Create form state
   const [createForm, setCreateForm] = useState<{
     email: string;
     password: string;
     name: string;
     role: UserRole;
-  }>({
-    email: '',
-    password: '',
-    name: '',
-    role: UserRole.STAFF,
-  });
+  }>({ email: '', password: '', name: '', role: UserRole.STAFF });
 
-  // Edit form state
   const [editForm, setEditForm] = useState<{
     name: string;
     role: UserRole;
     isActive: boolean;
     clockifyUserId: string;
-  }>({
-    name: '',
-    role: UserRole.STAFF,
-    isActive: true,
-    clockifyUserId: '',
-  });
+  }>({ name: '', role: UserRole.STAFF, isActive: true, clockifyUserId: '' });
 
-  // Reset password form state
-  const [resetPasswordForm, setResetPasswordForm] = useState({
-    newPassword: '',
-  });
+  const [resetPasswordForm, setResetPasswordForm] = useState({ newPassword: '' });
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-
     try {
       await createUser(createForm.email, createForm.password, createForm.role, createForm.name || undefined);
       setIsCreateOpen(false);
       setCreateForm({ email: '', password: '', name: '', role: UserRole.STAFF });
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to create user');
+      setError(err.message || 'فشل إنشاء المستخدم');
     } finally {
       setIsSubmitting(false);
     }
@@ -137,45 +125,31 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingUser) return;
-
     setError('');
     setIsSubmitting(true);
-
     try {
       await updateUser(editingUser.id, {
         name: editForm.name || undefined,
         role: editForm.role,
         isActive: editForm.isActive,
       });
-
-      // Update linked staff Clockify ID if staff record exists
-      if (editingUser.staff) {
-        await updateUserClockifyId(
-          editingUser.id,
-          editForm.clockifyUserId.trim() || null
-        );
+      if (editingUser.staff?.length) {
+        await updateUserClockifyId(editingUser.id, editForm.clockifyUserId.trim() || null);
       }
       setIsEditOpen(false);
       setEditingUser(null);
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to update user');
+      setError(err.message || 'فشل تحديث المستخدم');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeleteClick = (user: User) => {
-    setDeletingUser(user);
-    setIsDeleteOpen(true);
-  };
-
   const handleDelete = async () => {
     if (!deletingUser) return;
-
     setError('');
     setIsSubmitting(true);
-
     try {
       await deleteUser(deletingUser.id);
       setIsDeleteOpen(false);
@@ -183,19 +157,16 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
       setIsSubmitting(false);
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to delete user');
+      setError(err.message || 'فشل حذف المستخدم');
       setIsSubmitting(false);
     }
   };
 
-
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingUser) return;
-
     setError('');
     setIsSubmitting(true);
-
     try {
       await resetPassword(editingUser.id, resetPasswordForm.newPassword);
       setIsResetPasswordOpen(false);
@@ -203,7 +174,7 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
       setResetPasswordForm({ newPassword: '' });
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to reset password');
+      setError(err.message || 'فشل تغيير كلمة المرور');
     } finally {
       setIsSubmitting(false);
     }
@@ -215,7 +186,7 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
       name: user.name || '',
       role: user.role,
       isActive: user.isActive,
-      clockifyUserId: user.staff?.clockifyUserId || '',
+      clockifyUserId: user.staff?.[0]?.clockifyUserId || '',
     });
     setIsEditOpen(true);
   };
@@ -226,77 +197,82 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
     setIsResetPasswordOpen(true);
   };
 
-  const getRoleBadgeVariant = (role: UserRole) => {
-    switch (role) {
-      case UserRole.SUPER_ADMIN:
-        return 'default';
-      case UserRole.STAFF:
-        return 'outline';
-      default:
-        return 'outline';
-    }
-  };
-
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">Manage users and their roles</p>
+    <div className="container mx-auto px-4 py-6 max-w-5xl">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5">
+            <UserCog className="h-5 w-5 text-primary" />
+          </div>
+          <h1 className="text-xl font-bold">المستخدمون والصلاحيات</h1>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Create User
+            <Button size="sm" className="h-9">
+              <Plus className="h-4 w-4 me-1.5" />
+              إنشاء مستخدم
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent dir="rtl">
             <DialogHeader>
-              <DialogTitle>Create New User</DialogTitle>
-              <DialogDescription>Add a new user to the system</DialogDescription>
+              <DialogTitle className="text-start">إنشاء مستخدم جديد</DialogTitle>
+              <DialogDescription className="text-start">
+                حساب دخول للوحة التحكم — الصلاحيات تُحدد بعد الإنشاء من زر الدرع
+              </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="create-email">Email *</Label>
+            <form onSubmit={handleCreate} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="create-email" className="text-xs font-semibold text-muted-foreground">
+                  البريد الإلكتروني *
+                </Label>
                 <Input
                   id="create-email"
+                  className="h-9"
+                  dir="ltr"
                   type="email"
                   value={createForm.email}
                   onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="create-password">Password *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="create-password" className="text-xs font-semibold text-muted-foreground">
+                  كلمة المرور *
+                </Label>
                 <Input
                   id="create-password"
+                  className="h-9"
+                  dir="ltr"
                   type="password"
                   value={createForm.password}
                   onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="create-name">Name</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="create-name" className="text-xs font-semibold text-muted-foreground">
+                  الاسم
+                </Label>
                 <Input
                   id="create-name"
+                  className="h-9"
                   type="text"
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="create-role">Role *</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-muted-foreground">الدور *</Label>
                 <Select
                   value={createForm.role}
                   onValueChange={(value) => setCreateForm({ ...createForm, role: value as UserRole })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={UserRole.STAFF}>STAFF</SelectItem>
+                    <SelectItem value={UserRole.STAFF}>{ROLE_LABELS.STAFF}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -308,11 +284,11 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                    جاري الإنشاء...
                   </>
                 ) : (
-                  'Create User'
+                  'إنشاء المستخدم'
                 )}
               </Button>
             </form>
@@ -321,168 +297,202 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
       </div>
 
       {error && !isCreateOpen && !isEditOpen && !isResetPasswordOpen && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="mb-4">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Email</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Last Login</TableHead>
-              <TableHead>Password</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  No users found
-                </TableCell>
-              </TableRow>
-            ) : (
-              users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.email}</TableCell>
-                  <TableCell>{user.name || '-'}</TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>{user.role}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                      {user.isActive ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {user.lastLogin ? formatDateTime(user.lastLogin) : 'Never'}
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">{user.password}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => router.push(`/users/${user.id}/permissions`)}
-                        disabled={isSubmitting || user.role === UserRole.SUPER_ADMIN}
-                        title={user.role === UserRole.SUPER_ADMIN ? 'SUPER_ADMIN has access to all routes' : 'إدارة الصلاحيات'}
-                      >
-                        <Shield className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditDialog(user)}
-                        disabled={isSubmitting}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openResetPasswordDialog(user)}
-                        disabled={isSubmitting}
-                      >
-                        <Key className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteClick(user)}
-                        disabled={isSubmitting || user.id === currentUserId}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </TableCell>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <CardTitle>قائمة المستخدمين</CardTitle>
+            <Badge variant="secondary">{users.length} مستخدم</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-right">المستخدم</TableHead>
+                  <TableHead className="text-right">الدور</TableHead>
+                  <TableHead className="text-right">الحالة</TableHead>
+                  <TableHead className="text-right">آخر دخول</TableHead>
+                  <TableHead className="text-right w-44">الإجراءات</TableHead>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </TableHeader>
+              <TableBody>
+                {users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                      لا يوجد مستخدمون
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div className="font-medium">{user.name || '—'}</div>
+                        <div className="text-[11px] text-muted-foreground" dir="ltr">
+                          {user.email}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.role === UserRole.SUPER_ADMIN ? 'default' : 'outline'}>
+                          {ROLE_LABELS[user.role]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.isActive ? 'default' : 'secondary'}>
+                          {user.isActive ? 'نشط' : 'موقوف'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">
+                        {user.lastLogin ? formatDateTime(user.lastLogin) : 'لم يدخل بعد'}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2"
+                            onClick={() => router.push(`/users/${user.id}/permissions`)}
+                            disabled={isSubmitting || user.role === UserRole.SUPER_ADMIN}
+                            title={
+                              user.role === UserRole.SUPER_ADMIN
+                                ? 'المدير العام يملك كل الصلاحيات تلقائياً'
+                                : 'إدارة الصلاحيات'
+                            }
+                            aria-label="الصلاحيات"
+                          >
+                            <Shield className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2"
+                            onClick={() => openEditDialog(user)}
+                            disabled={isSubmitting}
+                            title="تعديل"
+                            aria-label="تعديل"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2"
+                            onClick={() => openResetPasswordDialog(user)}
+                            disabled={isSubmitting}
+                            title="تغيير كلمة المرور"
+                            aria-label="تغيير كلمة المرور"
+                          >
+                            <Key className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2 text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                            onClick={() => {
+                              setDeletingUser(user);
+                              setIsDeleteOpen(true);
+                            }}
+                            disabled={isSubmitting || user.id === currentUserId}
+                            title={user.id === currentUserId ? 'لا يمكنك حذف حسابك' : 'حذف'}
+                            aria-label="حذف"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Edit Dialog */}
+      {/* Edit dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent>
+        <DialogContent dir="rtl">
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription>Update user information</DialogDescription>
+            <DialogTitle className="text-start">تعديل المستخدم</DialogTitle>
           </DialogHeader>
           {editingUser && (
-            <form onSubmit={handleEdit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-email">Email</Label>
-                <Input id="edit-email" type="email" value={editingUser.email} disabled />
+            <form onSubmit={handleEdit} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-muted-foreground">البريد الإلكتروني</Label>
+                <Input className="h-9" dir="ltr" type="email" value={editingUser.email} disabled />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-name">Name</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-name" className="text-xs font-semibold text-muted-foreground">
+                  الاسم
+                </Label>
                 <Input
                   id="edit-name"
+                  className="h-9"
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-role">Role</Label>
-                <Select
-                  value={editForm.role}
-                  onValueChange={(value) => setEditForm({ ...editForm, role: value as UserRole })}
-                  disabled={editingUser.role === UserRole.SUPER_ADMIN}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {editingUser.role === UserRole.SUPER_ADMIN ? (
-                      <SelectItem value={UserRole.SUPER_ADMIN}>SUPER_ADMIN</SelectItem>
-                    ) : (
-                      <SelectItem value={UserRole.STAFF}>STAFF</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-muted-foreground">الدور</Label>
+                  <Select
+                    value={editForm.role}
+                    onValueChange={(value) => setEditForm({ ...editForm, role: value as UserRole })}
+                    disabled={editingUser.role === UserRole.SUPER_ADMIN}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {editingUser.role === UserRole.SUPER_ADMIN ? (
+                        <SelectItem value={UserRole.SUPER_ADMIN}>{ROLE_LABELS.SUPER_ADMIN}</SelectItem>
+                      ) : (
+                        <SelectItem value={UserRole.STAFF}>{ROLE_LABELS.STAFF}</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-muted-foreground">الحالة</Label>
+                  <Select
+                    value={editForm.isActive ? 'active' : 'inactive'}
+                    onValueChange={(value) => setEditForm({ ...editForm, isActive: value === 'active' })}
+                    disabled={editingUser.role === UserRole.SUPER_ADMIN}
+                  >
+                    <SelectTrigger className="h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">نشط</SelectItem>
+                      <SelectItem value="inactive">موقوف</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-active">Status</Label>
-                <Select
-                  value={editForm.isActive ? 'active' : 'inactive'}
-                  onValueChange={(value) => setEditForm({ ...editForm, isActive: value === 'active' })}
-                  disabled={editingUser.role === UserRole.SUPER_ADMIN}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {editingUser.staff ? (
-                <div className="space-y-2">
-                  <Label htmlFor="edit-clockify-id">Clockify User ID (for time tracking)</Label>
+              {editingUser.staff?.length ? (
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-clockify-id" className="text-xs font-semibold text-muted-foreground">
+                    معرف Clockify (لتتبع الوقت)
+                  </Label>
                   <Input
                     id="edit-clockify-id"
+                    className="h-9"
+                    dir="ltr"
                     type="text"
                     value={editForm.clockifyUserId}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, clockifyUserId: e.target.value })
-                    }
-                    placeholder="Paste Clockify user ID"
+                    onChange={(e) => setEditForm({ ...editForm, clockifyUserId: e.target.value })}
+                    placeholder="الصق معرف المستخدم من Clockify"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Copy the ID from the Clockify Users page and paste it here to link time tracking.
-                  </p>
                 </div>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  This user is not linked to a staff record, so Clockify ID cannot be set here.
+                  هذا المستخدم غير مرتبط بملف موظف، فلا يمكن ضبط معرف تتبع الوقت هنا.
                 </p>
               )}
               {error && (
@@ -493,11 +503,11 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Updating...
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                    جاري الحفظ...
                   </>
                 ) : (
-                  'Update User'
+                  'حفظ التعديلات'
                 )}
               </Button>
             </form>
@@ -505,24 +515,28 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
         </DialogContent>
       </Dialog>
 
-      {/* Reset Password Dialog */}
+      {/* Reset password dialog */}
       <Dialog open={isResetPasswordOpen} onOpenChange={setIsResetPasswordOpen}>
-        <DialogContent>
+        <DialogContent dir="rtl">
           <DialogHeader>
-            <DialogTitle>Reset Password</DialogTitle>
-            <DialogDescription>Set a new password for {editingUser?.email}</DialogDescription>
+            <DialogTitle className="text-start">تغيير كلمة المرور</DialogTitle>
+            <DialogDescription className="text-start" dir="ltr">
+              {editingUser?.email}
+            </DialogDescription>
           </DialogHeader>
           {editingUser && (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="reset-password">New Password *</Label>
+            <form onSubmit={handleResetPassword} className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="reset-password" className="text-xs font-semibold text-muted-foreground">
+                  كلمة المرور الجديدة *
+                </Label>
                 <Input
                   id="reset-password"
+                  className="h-9"
+                  dir="ltr"
                   type="text"
                   value={resetPasswordForm.newPassword}
-                  onChange={(e) =>
-                    setResetPasswordForm({ newPassword: e.target.value })
-                  }
+                  onChange={(e) => setResetPasswordForm({ newPassword: e.target.value })}
                   required
                 />
               </div>
@@ -534,11 +548,11 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Resetting...
+                    <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                    جاري التغيير...
                   </>
                 ) : (
-                  'Reset Password'
+                  'تغيير كلمة المرور'
                 )}
               </Button>
             </form>
@@ -546,7 +560,7 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete confirmation */}
       <AlertDialog
         open={isDeleteOpen}
         onOpenChange={(open) => {
@@ -558,29 +572,20 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
           }
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent dir="rtl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete User</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this user? This action cannot be undone.
+            <AlertDialogTitle className="text-start">حذف المستخدم</AlertDialogTitle>
+            <AlertDialogDescription className="text-start">
+              متأكد من حذف هذا المستخدم؟ الإجراء نهائي ولا يمكن التراجع عنه.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {deletingUser && (
-            <div className="p-4 bg-muted rounded-lg space-y-2">
-              <div>
-                <p className="text-sm font-medium mb-1">Email:</p>
-                <p className="text-sm text-muted-foreground">{deletingUser.email}</p>
+            <div className="p-3 bg-muted rounded-lg text-sm space-y-1">
+              <div className="font-medium">{deletingUser.name || '—'}</div>
+              <div className="text-muted-foreground" dir="ltr">
+                {deletingUser.email}
               </div>
-              {deletingUser.name && (
-                <div>
-                  <p className="text-sm font-medium mb-1">Name:</p>
-                  <p className="text-sm text-muted-foreground">{deletingUser.name}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-sm font-medium mb-1">Role:</p>
-                <p className="text-sm text-muted-foreground">{deletingUser.role}</p>
-              </div>
+              <Badge variant="outline">{ROLE_LABELS[deletingUser.role]}</Badge>
             </div>
           )}
           <AlertDialogFooter>
@@ -590,7 +595,7 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
                 setIsSubmitting(false);
               }}
             >
-              Cancel
+              إلغاء
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
@@ -599,18 +604,16 @@ export function UsersPageClient({ users, locale, currentUserId }: UsersPageClien
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
+                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                  جاري الحذف...
                 </>
               ) : (
-                'Delete User'
+                'حذف نهائياً'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 }
-

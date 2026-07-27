@@ -38,9 +38,9 @@ const routeCategories = [
     id: 'operations',
     label: 'operations',
     routes: [
+      '/positions',
       '/applications',
       '/applications/interviews',
-      '/staff',
       '/contact-messages',
       '/tasks',
     ],
@@ -48,14 +48,13 @@ const routeCategories = [
   {
     id: 'financial',
     label: 'financial',
-    routes: ['/accounting', '/costs', '/source-of-income', '/subscriptions', '/customers'],
+    routes: ['/accounting', '/categories', '/costs', '/source-of-income'],
   },
   {
     id: 'management',
     label: 'management',
     routes: [
       '/contracts',
-      '/reports',
       '/settings',
       '/users',
       '/clockify-users',

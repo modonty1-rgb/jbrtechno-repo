@@ -63,7 +63,7 @@ export async function getStaffTimeEntries(
 
     // If STAFF role, only allow access to their own data
     if (session.user.role === UserRole.STAFF) {
-      const staff = await prisma.staff.findUnique({
+      const staff = await prisma.staff.findFirst({
         where: { userId: session.user.id },
       });
       if (!staff || staff.id !== staffId) {

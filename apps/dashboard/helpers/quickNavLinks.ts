@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListTodo, Clock, StickyNote } from 'lucide-react';
+import { LayoutDashboard, ListTodo, Clock, StickyNote, Mail } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { messages } from '@/helpers/messages';
 
@@ -17,4 +17,5 @@ export const quickNavLinks: QuickNavLink[] = [
   { route: '/tasks/my-tasks', title: 'مهامي', icon: ListTodo },
   { route: '/my-time', title: 'سجل الوقت', icon: Clock },
   { route: '/notes', title: messages.admin.administrativeNotes, icon: StickyNote },
+  { route: '/contact-messages', title: messages.admin.contactMessages, icon: Mail },
 ];

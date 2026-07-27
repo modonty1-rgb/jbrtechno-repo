@@ -34,7 +34,7 @@ async function fetchUserAvatarUrl(): Promise<string | null> {
 
     return getUserAvatarUrl({
       userAvatarUrl: user.avatarUrl,
-      applicationProfileImageUrl: user.staff?.application?.profileImageUrl || null,
+      applicationProfileImageUrl: user.staff[0]?.application?.profileImageUrl || null,
     });
   } catch (error) {
     console.error('Error loading user avatar:', error);
@@ -47,7 +47,10 @@ interface DashboardLayoutProps {
 }
 
 export async function DashboardLayout({ children }: DashboardLayoutProps) {
-  const userAvatarUrl = await fetchUserAvatarUrl();
+  const [userAvatarUrl, contactMessageCount] = await Promise.all([
+    fetchUserAvatarUrl(),
+    prisma.contactMessage.count().catch(() => 0),
+  ]);
 
   return (
     <SessionProviderWrapper>
@@ -62,7 +65,7 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
           <AdminMobileSidebar>
             <AdminSidebar locale="ar" userAvatarUrl={userAvatarUrl} />
           </AdminMobileSidebar>
-          <TopNavbar locale="ar" userAvatarUrl={userAvatarUrl} />
+          <TopNavbar locale="ar" userAvatarUrl={userAvatarUrl} contactMessageCount={contactMessageCount} />
           {children}
         </main>
       </div>

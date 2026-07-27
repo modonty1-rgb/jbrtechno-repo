@@ -24,7 +24,7 @@ export default async function MyTimePage({
   }
 
   // Find staff record for this user
-  const staff = await prisma.staff.findUnique({
+  const staff = await prisma.staff.findFirst({
     where: { userId: session.user.id },
     select: {
       id: true,

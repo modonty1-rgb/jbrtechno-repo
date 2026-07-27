@@ -90,7 +90,7 @@ const routeGroups: Record<string, string[]> = {
 const sectionLabels: Record<string, string> = {
   'recruitment': 'التوظيف',
   'staff-affairs': 'شؤون الموظفين',
-  'financial-management': 'الإدارة المالية',
+  'financial-management': 'الإدارة',
   'administration': 'الإعدادات والمستخدمون',
 };
 

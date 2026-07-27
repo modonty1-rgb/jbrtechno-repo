@@ -14,6 +14,7 @@ import { ProfileImageUpload } from '@/components/forms/ProfileImageUpload';
 import { SuccessDialog } from '@/components/common/SuccessDialog';
 import { submitApplication } from '@/actions/submitApplication';
 import { getPositionByTitle } from '@/actions/positions';
+import { positionSlug } from '@/helpers/positionSlug';
 import {
   Select,
   SelectContent,
@@ -36,10 +37,18 @@ export default function ApplyPage() {
   useEffect(() => {
     (async () => {
       const found = await getPositionByTitle(positionTitle);
+      // Old-format links (raw titles with spaces/percent-encoding) get
+      // normalized in the address bar to the clean ad-friendly slug.
+      if (found) {
+        const cleanSlug = positionSlug(found.titleEn);
+        if (positionTitle !== cleanSlug) {
+          window.history.replaceState(null, '', `/${locale}/careers/apply/${cleanSlug}`);
+        }
+      }
       setPosition(found);
       setPositionLoading(false);
     })();
-  }, [positionTitle]);
+  }, [positionTitle, locale]);
 
   const [acknowledged, setAcknowledged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -78,6 +87,23 @@ export default function ApplyPage() {
     willingnessToRelocate: false,
     bestInterviewTime: '',
   });
+
+  // Never show "position not found" while the lookup is still in flight —
+  // on slow connections that flash reads as a dead link and loses applicants.
+  if (positionLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <Card>
+          <CardContent className="py-16 text-center">
+            <Loader2 className="h-10 w-10 text-primary mx-auto mb-4 animate-spin" />
+            <p className="text-muted-foreground">
+              {locale === 'ar' ? 'جاري تحميل بيانات الوظيفة...' : 'Loading position details...'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!position) {
     return (
@@ -224,7 +250,9 @@ export default function ApplyPage() {
         applicantName: formData.applicantName,
         email: formData.email,
         phone: formData.phone,
-        position: positionTitle,
+        // Store the canonical DB title, not the URL slug — keeps records
+        // consistent with the dashboard's per-position grouping.
+        position: position.title,
         yearsOfExperience: parseInt(formData.yearsOfExperience, 10),
         availabilityDate: formData.availabilityDate,
         currentLocation: formData.currentLocation,
@@ -309,7 +337,7 @@ export default function ApplyPage() {
 
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">{t('applyForPosition')}</h1>
-        <p className="text-xl text-muted-foreground">{positionTitle}</p>
+        <p className="text-xl text-muted-foreground">{locale === 'ar' ? position.title : position.titleEn}</p>
       </div>
 
       {/* Requirements Section */}
@@ -989,7 +1017,7 @@ export default function ApplyPage() {
         open={showSuccessDialog}
         onClose={() => setShowSuccessDialog(false)}
         applicantName={formData.applicantName}
-        position={positionTitle}
+        position={locale === 'ar' ? position.title : position.titleEn}
         locale={locale}
       />
     </div>

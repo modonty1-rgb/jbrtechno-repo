@@ -5,6 +5,7 @@ import { Button } from '@jbrtechno/ui';
 import { CheckCircle2, Briefcase, Send, Users, Target, Sparkles, TrendingUp, Code, PenTool, BarChart3, ShoppingCart, Award, ArrowRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getAllPositions } from '@/actions/positions';
+import { positionSlug } from '@/helpers/positionSlug';
 import { PublicShell } from '@/components/layout/PublicShell';
 
 // Always read fresh from DB — dashboard toggles (isOpen) must reflect instantly.
@@ -331,7 +332,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                         </div>
                         {!isFilled && (
                           <div className="pt-4 border-t">
-                            <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                            <Link href={`/${locale}/careers/apply/${positionSlug(position.titleEn)}`}>
                               <Button className="w-full group/btn relative overflow-hidden" size="lg">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                   <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -459,7 +460,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                       </div>
                       {!isFilled && (
                         <div className="pt-4 border-t">
-                          <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                          <Link href={`/${locale}/careers/apply/${positionSlug(position.titleEn)}`}>
                             <Button className="w-full group/btn relative overflow-hidden" size="lg">
                               <span className="relative z-10 flex items-center justify-center gap-2">
                                 <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -576,7 +577,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                         </div>
                         {!isFilled && (
                           <div className="pt-4 border-t">
-                            <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                            <Link href={`/${locale}/careers/apply/${positionSlug(position.titleEn)}`}>
                               <Button className="w-full group/btn relative overflow-hidden" size="lg">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                   <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -705,7 +706,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                         </div>
                         {!isFilled && (
                           <div className="pt-4 border-t">
-                            <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                            <Link href={`/${locale}/careers/apply/${positionSlug(position.titleEn)}`}>
                               <Button className="w-full group/btn relative overflow-hidden" size="lg">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                   <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -844,7 +845,7 @@ export default async function CareersPage({ params }: { params: Promise<{ locale
                         </div>
                         {!isFilled && (
                           <div className="pt-4 border-t">
-                            <Link href={`/${locale}/careers/apply/${encodeURIComponent(locale === 'ar' ? position.title : position.titleEn)}`}>
+                            <Link href={`/${locale}/careers/apply/${positionSlug(position.titleEn)}`}>
                               <Button className="w-full group/btn relative overflow-hidden" size="lg">
                                 <span className="relative z-10 flex items-center justify-center gap-2">
                                   <Send className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />

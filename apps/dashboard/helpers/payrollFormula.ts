@@ -32,6 +32,14 @@ export function netSalary(base: number, bonuses: number, deductions: number): nu
   return base + bonuses - deductions;
 }
 
+// Partial months (mid-month hire or termination) are paid pro-rata at
+// base / 30 per day. A complete month is always the full salary regardless
+// of whether it has 28, 30, or 31 days.
+export function proratedBase(fullBase: number, workedDays: number, monthDays: number): number {
+  if (workedDays >= monthDays) return fullBase;
+  return Math.min(fullBase, Math.round(dayRate(fullBase) * workedDays));
+}
+
 // Closing window: a month can only be closed from its 28th day onward
 // (or any time after it has ended). Future months can never be closed.
 export function isCloseAllowed(month: string, now = new Date()): { allowed: boolean; reason?: string } {

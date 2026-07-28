@@ -54,7 +54,7 @@ function formatDateTime(date: Date): string {
 }
 
 const ROLE_LABELS: Record<UserRole, string> = {
-  SUPER_ADMIN: 'مدير عام',
+  SUPER_ADMIN: 'أدمن',
   STAFF: 'موظف',
 };
 
@@ -273,8 +273,14 @@ export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) 
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={UserRole.STAFF}>{ROLE_LABELS.STAFF}</SelectItem>
+                    <SelectItem value={UserRole.SUPER_ADMIN}>{ROLE_LABELS.SUPER_ADMIN}</SelectItem>
                   </SelectContent>
                 </Select>
+                {createForm.role === UserRole.SUPER_ADMIN && (
+                  <p className="text-[11px] text-warning font-bold">
+                    الأدمن يملك كل الصلاحيات بما فيها الرواتب والمستخدمون — امنحه بحذر
+                  </p>
+                )}
               </div>
               {error && (
                 <Alert variant="destructive">
@@ -344,7 +350,7 @@ export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) 
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                          {user.isActive ? 'نشط' : 'موقوف'}
+                          {user.isActive ? 'نشط' : 'معطّل'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs whitespace-nowrap">
@@ -360,7 +366,7 @@ export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) 
                             disabled={isSubmitting || user.role === UserRole.SUPER_ADMIN}
                             title={
                               user.role === UserRole.SUPER_ADMIN
-                                ? 'المدير العام يملك كل الصلاحيات تلقائياً'
+                                ? 'الأدمن يملك كل الصلاحيات تلقائياً'
                                 : 'إدارة الصلاحيات'
                             }
                             aria-label="الصلاحيات"
@@ -444,17 +450,14 @@ export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) 
                   <Select
                     value={editForm.role}
                     onValueChange={(value) => setEditForm({ ...editForm, role: value as UserRole })}
-                    disabled={editingUser.role === UserRole.SUPER_ADMIN}
+                    disabled={editingUser.id === currentUserId}
                   >
                     <SelectTrigger className="h-9">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {editingUser.role === UserRole.SUPER_ADMIN ? (
-                        <SelectItem value={UserRole.SUPER_ADMIN}>{ROLE_LABELS.SUPER_ADMIN}</SelectItem>
-                      ) : (
-                        <SelectItem value={UserRole.STAFF}>{ROLE_LABELS.STAFF}</SelectItem>
-                      )}
+                      <SelectItem value={UserRole.STAFF}>{ROLE_LABELS.STAFF}</SelectItem>
+                      <SelectItem value={UserRole.SUPER_ADMIN}>{ROLE_LABELS.SUPER_ADMIN}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -463,14 +466,14 @@ export function UsersPageClient({ users, currentUserId }: UsersPageClientProps) 
                   <Select
                     value={editForm.isActive ? 'active' : 'inactive'}
                     onValueChange={(value) => setEditForm({ ...editForm, isActive: value === 'active' })}
-                    disabled={editingUser.role === UserRole.SUPER_ADMIN}
+                    disabled={editingUser.id === currentUserId}
                   >
                     <SelectTrigger className="h-9">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="active">نشط</SelectItem>
-                      <SelectItem value="inactive">موقوف</SelectItem>
+                      <SelectItem value="inactive">معطّل</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

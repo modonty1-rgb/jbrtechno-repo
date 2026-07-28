@@ -15,18 +15,14 @@ import {
   TableRow,
   Button,
   Badge,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from '@jbrtechno/ui';
 import Link from 'next/link';
-import { Users, UserPlus, Eye, Pencil, Archive } from 'lucide-react';
+import { Users, UserPlus, Eye, Pencil, Archive, RotateCcw } from 'lucide-react';
 import { StaffStatus } from '@jbrtechno/database';
 import type { Staff } from '@/actions/staff';
-import { archiveStaff } from '@/actions/staffHr';
+import { archiveStaff, restoreStaff } from '@/actions/staffHr';
 import { baseSalaryForMonth } from '@/helpers/payrollFormula';
+import { cn } from '@jbrtechno/shared';
 
 interface StaffPageClientProps {
   staff: Staff[];
@@ -73,7 +69,8 @@ function tenureLabel(hireDate: Date | string, until?: Date | string | null) {
 export function StaffPageClient({ staff }: StaffPageClientProps) {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [statusFilter, setStatusFilter] = useState<StaffStatus | 'ALL'>('ALL');
+  // Default view = active employees; archive reachable via its own chip
+  const [statusFilter, setStatusFilter] = useState<StaffStatus | 'ALL'>('ACTIVE');
   const [confirmArchiveId, setConfirmArchiveId] = useState<string | null>(null);
 
   const handleArchive = (id: string) => {
@@ -89,23 +86,27 @@ export function StaffPageClient({ staff }: StaffPageClientProps) {
     });
   };
 
+  const handleRestore = (id: string) => {
+    startTransition(async () => {
+      await restoreStaff(id);
+      router.refresh();
+    });
+  };
+
   const filteredStaff = useMemo(() => {
     if (statusFilter === 'ALL') return staff;
     return staff.filter((s) => s.status === statusFilter);
   }, [staff, statusFilter]);
 
-  const getStatusBadgeVariant = (status: StaffStatus) => {
-    switch (status) {
-      case 'ACTIVE':
-        return 'default';
-      case 'INACTIVE':
-        return 'secondary';
-      case 'ON_LEAVE':
-        return 'outline';
-      default:
-        return 'secondary';
-    }
-  };
+  const countOf = (status: StaffStatus | 'ALL') =>
+    status === 'ALL' ? staff.length : staff.filter((s) => s.status === status).length;
+
+  const FILTERS: { value: StaffStatus | 'ALL'; label: string }[] = [
+    { value: 'ACTIVE', label: 'نشط' },
+    { value: 'ON_LEAVE', label: 'في إجازة' },
+    { value: 'INACTIVE', label: 'الأرشيف' },
+    { value: 'ALL', label: 'الكل' },
+  ];
 
   const getStatusLabel = (status: StaffStatus) => {
     const labels: Record<StaffStatus, string> = {
@@ -114,6 +115,20 @@ export function StaffPageClient({ staff }: StaffPageClientProps) {
       ON_LEAVE: 'في إجازة',
     };
     return labels[status];
+  };
+
+  // Terminated employees (INACTIVE + termination record) get their own badge,
+  // distinct from plain archived ones.
+  const statusBadge = (member: Staff) => {
+    if (member.status === 'INACTIVE' && member.terminationDate) {
+      return (
+        <Badge className="bg-destructive/15 text-destructive border-transparent hover:bg-destructive/15">
+          منتهي الخدمات
+        </Badge>
+      );
+    }
+    const variant = member.status === 'ACTIVE' ? 'default' : member.status === 'ON_LEAVE' ? 'outline' : 'secondary';
+    return <Badge variant={variant}>{getStatusLabel(member.status)}</Badge>;
   };
 
   // Current base salary (trial vs post-trial) — same formula as payroll
@@ -172,23 +187,22 @@ export function StaffPageClient({ staff }: StaffPageClientProps) {
               <CardTitle>قائمة الموظفين</CardTitle>
               <Badge variant="secondary">{filteredStaff.length} موظف</Badge>
             </div>
-            <div className="w-40">
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => setStatusFilter(value as StaffStatus | 'ALL')}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue>
-                    {statusFilter === 'ALL' ? 'جميع الحالات' : getStatusLabel(statusFilter as StaffStatus)}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">جميع الحالات</SelectItem>
-                  <SelectItem value="ACTIVE">{getStatusLabel('ACTIVE')}</SelectItem>
-                  <SelectItem value="INACTIVE">{getStatusLabel('INACTIVE')}</SelectItem>
-                  <SelectItem value="ON_LEAVE">{getStatusLabel('ON_LEAVE')}</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.value}
+                  type="button"
+                  onClick={() => setStatusFilter(f.value)}
+                  className={cn(
+                    'h-8 px-3 rounded-full border text-xs font-bold transition-colors',
+                    statusFilter === f.value
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border text-muted-foreground hover:border-primary/50'
+                  )}
+                >
+                  {f.label} ({countOf(f.value)})
+                </button>
+              ))}
             </div>
           </div>
         </CardHeader>
@@ -240,11 +254,7 @@ export function StaffPageClient({ staff }: StaffPageClientProps) {
                             '—'
                           )}
                         </TableCell>
-                        <TableCell>
-                          <Badge variant={getStatusBadgeVariant(member.status)}>
-                            {getStatusLabel(member.status)}
-                          </Badge>
-                        </TableCell>
+                        <TableCell>{statusBadge(member)}</TableCell>
                         <TableCell className="whitespace-nowrap">
                           <div className="font-medium">{tenureLabel(member.hireDate, member.terminationDate)}</div>
                           <div className="text-[11px] text-muted-foreground">منذ {formatDate(member.hireDate)}</div>
@@ -261,7 +271,19 @@ export function StaffPageClient({ staff }: StaffPageClientProps) {
                                 <Pencil className="h-3.5 w-3.5" />
                               </Button>
                             </Link>
-                            {member.status === 'ACTIVE' && (
+                            {member.status === 'INACTIVE' ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 px-2 text-success border-success/40 hover:bg-success/10 hover:text-success"
+                                aria-label="استعادة"
+                                title="استعادة الموظف (يرجع نشطاً)"
+                                onClick={() => handleRestore(member.id)}
+                              >
+                                <RotateCcw className="h-3.5 w-3.5" />
+                                <span className="ms-1 text-[11px]">استعادة</span>
+                              </Button>
+                            ) : (
                               <Button
                                 variant={confirmArchiveId === member.id ? 'destructive' : 'outline'}
                                 size="sm"

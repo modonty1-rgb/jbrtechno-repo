@@ -65,11 +65,6 @@ export async function createUser(
     throw new Error('Unauthorized');
   }
 
-  // Cannot create SUPER_ADMIN via UI
-  if (role === UserRole.SUPER_ADMIN) {
-    throw new Error('Cannot create SUPER_ADMIN user');
-  }
-
   // Check if email already exists
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -162,14 +157,26 @@ export async function updateUser(
     throw new Error('User not found');
   }
 
-  // Cannot change SUPER_ADMIN role
-  if (user.role === UserRole.SUPER_ADMIN && data.role && data.role !== UserRole.SUPER_ADMIN) {
-    throw new Error('Cannot change SUPER_ADMIN role');
+  // Safety rails: you cannot change your own role or deactivate yourself,
+  // and the last active SUPER_ADMIN can never be demoted or deactivated.
+  if (id === session.user.id) {
+    if (data.role && data.role !== user.role) {
+      throw new Error('لا يمكنك تغيير دور حسابك بنفسك');
+    }
+    if (data.isActive === false) {
+      throw new Error('لا يمكنك تعطيل حسابك بنفسك');
+    }
   }
-
-  // Cannot create another SUPER_ADMIN
-  if (data.role === UserRole.SUPER_ADMIN && user.role !== UserRole.SUPER_ADMIN) {
-    throw new Error('Cannot assign SUPER_ADMIN role');
+  if (
+    user.role === UserRole.SUPER_ADMIN &&
+    ((data.role && data.role !== UserRole.SUPER_ADMIN) || data.isActive === false)
+  ) {
+    const otherActiveAdmins = await prisma.user.count({
+      where: { role: UserRole.SUPER_ADMIN, isActive: true, id: { not: id } },
+    });
+    if (otherActiveAdmins === 0) {
+      throw new Error('لا يمكن تنزيل أو تعطيل آخر مدير عام في النظام');
+    }
   }
 
   await prisma.user.update({

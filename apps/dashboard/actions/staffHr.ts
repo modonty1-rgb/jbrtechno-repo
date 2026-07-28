@@ -5,7 +5,7 @@ import { prisma } from '@jbrtechno/database';
 import { UserRole, StaffStatus, AdjustmentType, SalaryMode } from '@jbrtechno/database';
 import { revalidatePath } from 'next/cache';
 import { uploadStaffImage, uploadStaffDoc } from '@/lib/cloudinary';
-import { baseSalaryForMonth, dayRate, netSalary, isCloseAllowed } from '@/helpers/payrollFormula';
+import { baseSalaryForMonth, dayRate, netSalary, proratedBase, isCloseAllowed } from '@/helpers/payrollFormula';
 
 async function requireSuperAdmin() {
   const session = await auth();
@@ -194,9 +194,20 @@ export async function updateStaffHr(staffId: string, formData: FormData): Promis
     const emergencyName = str('emergencyName');
     const emergencyPhone = str('emergencyPhone');
 
+    // Status is editable in edit mode. Reactivating a terminated employee
+    // clears the termination record so payroll and the profile are consistent.
+    const statusStr = str('status');
+    const status =
+      statusStr === 'INACTIVE' ? StaffStatus.INACTIVE : statusStr === 'ON_LEAVE' ? StaffStatus.ON_LEAVE : StaffStatus.ACTIVE;
+    const reactivating = existing.status !== StaffStatus.ACTIVE && status === StaffStatus.ACTIVE;
+
     await prisma.staff.update({
       where: { id: staffId },
       data: {
+        status,
+        ...(reactivating && existing.terminationDate
+          ? { terminationDate: null, terminationReason: null, clearance: undefined }
+          : {}),
         fullName,
         department,
         jobDuties: str('jobDuties'),
@@ -251,6 +262,23 @@ export async function archiveStaff(staffId: string): Promise<{ success: boolean;
   } catch (error) {
     console.error('archiveStaff error:', error);
     return { success: false, error: 'فشلت الأرشفة' };
+  }
+}
+
+// Restore an archived/terminated employee back to ACTIVE; any termination
+// record is cleared so payroll and the profile stay consistent.
+export async function restoreStaff(staffId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireSuperAdmin();
+    await prisma.staff.update({
+      where: { id: staffId },
+      data: { status: StaffStatus.ACTIVE, terminationDate: null, terminationReason: null, clearance: undefined },
+    });
+    revalidatePath('/staff');
+    return { success: true };
+  } catch (error) {
+    console.error('restoreStaff error:', error);
+    return { success: false, error: 'فشلت الاستعادة' };
   }
 }
 
@@ -423,6 +451,12 @@ export interface PayrollRowData {
   bonuses: number;
   deductions: number;
   net: number;
+  // Employment days inside this payroll month (partial for mid-month
+  // hires/terminations) out of the month's total days
+  workedDays?: number;
+  monthDays?: number;
+  // Hired during this payroll month (didn't work it in full)
+  isNewHire?: boolean;
   // Payout details for executing the transfer from the sheet
   bankName?: string | null;
   iban?: string | null;
@@ -482,13 +516,31 @@ async function computePayrollRows(month: string): Promise<PayrollRowData[]> {
       return hireMonth <= month;
     })
     .map((s) => {
-      const base = baseSalaryForMonth(
+      const fullBase = baseSalaryForMonth(
         { trialSalary: s.trialSalary, salary: s.salary, salaryMode: s.salaryMode, trialEndDate: s.trialEndDate },
         month
       );
       const bonuses = s.adjustments.filter((a) => a.type === 'BONUS').reduce((sum, a) => sum + a.amount, 0);
       const deductions = s.adjustments.filter((a) => a.type === 'DEDUCTION').reduce((sum, a) => sum + a.amount, 0);
+
+      // Employment days within this month (UTC, inclusive)
+      const [year, monthNum] = month.split('-').map(Number);
+      const monthDays = new Date(Date.UTC(year, monthNum, 0)).getUTCDate();
+      const rangeStart = Date.UTC(year, monthNum - 1, 1);
+      const rangeEnd = Date.UTC(year, monthNum - 1, monthDays);
+      const from = Math.max(s.hireDate.getTime(), rangeStart);
+      const to = s.terminationDate ? Math.min(s.terminationDate.getTime(), rangeEnd) : rangeEnd;
+      const workedDays = Math.max(0, Math.min(monthDays, Math.floor((to - from) / 86_400_000) + 1));
+
+      // Partial months are paid pro-rata (base / 30 per day)
+      const base = proratedBase(fullBase, workedDays, monthDays);
+
+      const hireMonth = `${s.hireDate.getFullYear()}-${String(s.hireDate.getMonth() + 1).padStart(2, '0')}`;
+
       return {
+        workedDays,
+        monthDays,
+        isNewHire: hireMonth === month,
         staffId: s.id,
         name: s.fullName || s.application?.applicantName || 'بدون اسم',
         currency: (s.currency === 'EGP' ? 'EGP' : 'SAR') as 'SAR' | 'EGP',

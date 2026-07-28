@@ -418,7 +418,7 @@ export function ProfilePageClient({
 
                   {isArabic ? 'دور المستخدم:' : 'Role:'}{' '}
 
-                  <span className="font-medium">{user.role}</span>
+                  <span className="font-medium">{user.role === 'SUPER_ADMIN' ? 'أدمن' : 'موظف'}</span>
 
                 </p>
 

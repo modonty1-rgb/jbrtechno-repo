@@ -51,7 +51,7 @@ export function NoPermissionsClient({
                 <strong>المستخدم:</strong> {user.email}
               </p>
               <p className="text-sm text-muted-foreground">
-                <strong>الدور:</strong> {user.role}
+                <strong>الدور:</strong> {user.role === 'SUPER_ADMIN' ? 'أدمن' : 'موظف'}
               </p>
             </div>
           )}

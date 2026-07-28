@@ -184,7 +184,7 @@ export function UserPermissionsPageClient({
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold">{user.email}</p>
-                  <Badge variant="secondary">{user.role}</Badge>
+                  <Badge variant="secondary">{user.role === 'SUPER_ADMIN' ? 'أدمن' : 'موظف'}</Badge>
                 </div>
                 {user.name && (
                   <p className="text-sm text-muted-foreground">{user.name}</p>

@@ -116,9 +116,15 @@ export function StaffDetailClient({ staff }: { staff: Staff }) {
                 {staff.department || staff.application?.position || '—'}
               </div>
             </div>
-            <Badge variant={staff.status === 'ACTIVE' ? 'default' : 'secondary'} className="ms-auto">
-              {STATUS_LABELS[staff.status]}
-            </Badge>
+            {staff.status === 'INACTIVE' && staff.terminationDate ? (
+              <Badge className="ms-auto bg-destructive/15 text-destructive border-transparent hover:bg-destructive/15">
+                منتهي الخدمات
+              </Badge>
+            ) : (
+              <Badge variant={staff.status === 'ACTIVE' ? 'default' : 'secondary'} className="ms-auto">
+                {STATUS_LABELS[staff.status]}
+              </Badge>
+            )}
           </div>
 
           <DetailSection title="البيانات الأساسية">

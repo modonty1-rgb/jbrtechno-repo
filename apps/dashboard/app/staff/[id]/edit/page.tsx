@@ -25,6 +25,7 @@ export default async function EditStaffPage({ params }: { params: Promise<{ id: 
       initialValues={{
         fullName: s.fullName ?? '',
         department: s.department ?? '',
+        status: s.status,
         jobDuties: s.jobDuties ?? '',
         nationalId: s.nationalId ?? '',
         nationality: s.nationality ?? '',

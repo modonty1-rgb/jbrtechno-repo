@@ -82,7 +82,7 @@ export function TopNavbar({ locale, userAvatarUrl, contactMessageCount = 0 }: To
             </span>
             {user.role && (
               <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
-                {user.role}
+                {user.role === 'SUPER_ADMIN' ? 'أدمن' : 'موظف'}
               </Badge>
             )}
           </Link>

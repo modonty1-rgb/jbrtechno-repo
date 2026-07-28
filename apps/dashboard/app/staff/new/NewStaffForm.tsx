@@ -306,6 +306,7 @@ interface NewStaffFormProps {
 const INITIAL_FORM = {
   fullName: '',
   department: '',
+  status: 'ACTIVE' as 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE',
   jobDuties: '',
   nationalId: '',
   nationality: '',
@@ -458,6 +459,20 @@ export function NewStaffForm({ positionTitles, staffId, initialValues, existingF
                 </SelectContent>
               </Select>
             </Field>
+            {isEdit && (
+              <Field label="حالة الموظف">
+                <Select value={form.status} onValueChange={(v) => update('status', v as typeof form.status)}>
+                  <SelectTrigger className={compactInput}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ACTIVE">نشط</SelectItem>
+                    <SelectItem value="INACTIVE">غير نشط</SelectItem>
+                    <SelectItem value="ON_LEAVE">في إجازة</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
             <Field label="رقم الهوية / الإقامة" htmlFor="nationalId" required>
               <Input id="nationalId" className={compactInput} dir="ltr" value={form.nationalId} onChange={(e) => update('nationalId', e.target.value)} placeholder={isEgypt ? 'الرقم القومي — 14 رقم' : '1xxxxxxxxx'} />
             </Field>

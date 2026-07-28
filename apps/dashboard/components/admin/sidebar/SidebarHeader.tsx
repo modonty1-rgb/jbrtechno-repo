@@ -85,7 +85,7 @@ export function SidebarHeader({ locale, user, userAvatarUrl }: SidebarHeaderProp
           </div>
           {user.role && (
             <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
-              {user.role}
+              {user.role === 'SUPER_ADMIN' ? 'أدمن' : 'موظف'}
             </Badge>
           )}
         </Link>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import {
   Button,
   Card,
@@ -113,6 +113,26 @@ export function PayrollPageClient({ initialData }: { initialData: PayrollMonthDa
     (c) => data.totals[c] && (data.totals[c].net !== 0 || data.totals[c].base !== 0)
   );
 
+  // Grand total in SAR: Egypt salaries converted — frozen rate for closed
+  // months, today's reference rate for open ones.
+  const [liveRate, setLiveRate] = useState<number | null>(null);
+  useEffect(() => {
+    setLiveRate(null);
+    if (data.totals.EGP.net > 0 && !(data.closed && data.totals.meta?.egpInSar)) {
+      getEgpRate().then((r) => setLiveRate(r.rate));
+    }
+  }, [data.month, data.closed, data.totals.EGP.net, data.totals.meta?.egpInSar]);
+
+  const egpAsSar =
+    data.totals.EGP.net === 0
+      ? 0
+      : data.closed && data.totals.meta?.egpInSar
+        ? data.totals.meta.egpInSar
+        : liveRate
+          ? Math.round(data.totals.EGP.net / liveRate)
+          : null;
+  const grandTotalSar = egpAsSar === null ? null : data.totals.SAR.net + egpAsSar;
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       {/* Header */}
@@ -172,10 +192,10 @@ export function PayrollPageClient({ initialData }: { initialData: PayrollMonthDa
         </div>
       )}
 
-      {/* Per-currency totals */}
+      {/* Per-currency totals + unified grand total in SAR */}
       {activeCurrencies.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-          {activeCurrencies.map((c) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+          {(['SAR', 'EGP'] as Currency[]).map((c) => {
             const t = data.totals[c];
             return (
               <Card key={c}>
@@ -195,6 +215,25 @@ export function PayrollPageClient({ initialData }: { initialData: PayrollMonthDa
               </Card>
             );
           })}
+          <Card className="border-primary/40 bg-primary/5">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-muted-foreground">الإجمالي النهائي (بالريال)</span>
+                <span className="text-lg font-extrabold text-primary">
+                  {grandTotalSar !== null ? fmt(grandTotalSar, 'SAR') : '...'}
+                </span>
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                {data.totals.EGP.net === 0
+                  ? 'لا رواتب مصرية هذا الشهر'
+                  : data.closed && data.totals.meta?.egpInSar
+                    ? `رواتب مصر بالمبلغ المدفوع فعلياً عند الإقفال (${data.totals.meta.egpInSar.toLocaleString('en')} ريال)`
+                    : liveRate
+                      ? `رواتب مصر محوّلة بسعر اليوم (1 ريال = ${liveRate.toFixed(2)} جنيه) — تقريبي حتى الإقفال`
+                      : 'جاري جلب سعر الصرف...'}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
@@ -210,6 +249,7 @@ export function PayrollPageClient({ initialData }: { initialData: PayrollMonthDa
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-right">الموظف</TableHead>
+                    <TableHead className="text-right">أيام العمل</TableHead>
                     <TableHead className="text-right">الراتب الأساسي</TableHead>
                     <TableHead className="text-right">الحوافز</TableHead>
                     <TableHead className="text-right">الخصومات</TableHead>
@@ -221,13 +261,35 @@ export function PayrollPageClient({ initialData }: { initialData: PayrollMonthDa
                   {data.rows.map((row) => (
                     <TableRow key={row.staffId}>
                       <TableCell className="font-medium">
-                        <Link
-                          href={`/staff/${row.staffId}`}
-                          className="inline-flex items-center gap-1.5 hover:text-primary hover:underline"
-                        >
-                          {row.name}
-                          <ExternalLink className="h-3 w-3 opacity-40" />
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/staff/${row.staffId}`}
+                            className="inline-flex items-center gap-1.5 hover:text-primary hover:underline"
+                          >
+                            {row.name}
+                            <ExternalLink className="h-3 w-3 opacity-40" />
+                          </Link>
+                          {row.isNewHire && (
+                            <Badge className="bg-info/15 text-info border-transparent hover:bg-info/15 text-[10px]">
+                              جديد
+                            </Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {row.workedDays != null && row.monthDays != null ? (
+                          <span
+                            dir="ltr"
+                            className={cn(
+                              'font-medium whitespace-nowrap',
+                              row.workedDays < row.monthDays && 'text-warning font-bold'
+                            )}
+                          >
+                            {row.workedDays} / {row.monthDays}
+                          </span>
+                        ) : (
+                          '—'
+                        )}
                       </TableCell>
                       <TableCell>{fmt(row.base, row.currency)}</TableCell>
                       <TableCell className={cn(row.bonuses > 0 && 'text-success font-bold')}>
